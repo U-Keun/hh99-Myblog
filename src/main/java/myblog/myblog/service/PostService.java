@@ -23,8 +23,9 @@ public class PostService {
      * 전체 게시글 조회
      */
     public List<PostResponseDTO> list() {
+        //작성날짜 기준 내림차순
         //Post 객체를 PostResponseDTO 타입으로 변경하여 리스트로 반환
-        return postRepository.findAll().stream()
+        return postRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(PostResponseDTO::new)
                 .collect(Collectors.toList());
     }
