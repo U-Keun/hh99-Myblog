@@ -48,4 +48,21 @@ public class PostService {
         }
         return new PostResponseDTO(findPost.get());
     }
+
+    /**
+     * 게시글 삭제
+     */
+    public void delete(Long id) throws Exception {
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("게시글이 존재하지 않습니다.")
+        );
+
+        String savedPassword = post.getPassword();
+        String reqPassword = postRepository.findById(id).get().getPassword();
+
+        if (!savedPassword.equals(reqPassword)) {
+            throw new IllegalAccessException("잘못된 비밀번호입니다.");
+        }
+        postRepository.deleteById(id);
+    }
 }
