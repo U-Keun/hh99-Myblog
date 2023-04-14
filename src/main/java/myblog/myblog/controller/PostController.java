@@ -25,7 +25,7 @@ public class PostController {
     @PostMapping()
     @ResponseBody
     public PostResponseDTO register(PostRequestDTO dto) {
-        PostResponseDTO savedPost = postService.register(dto);
+        PostResponseDTO savedPost = postService.savePost(dto);
         return savedPost;
     }
 
@@ -39,12 +39,12 @@ public class PostController {
     @DeleteMapping("/delete/{id}")
     @ResponseBody
     public String delete(@PathVariable Long id, @RequestParam String password) {
-        return postService.delete(id, password);
+        return postService.deletePost(id, password);
     }
 
     @PutMapping("/update/{id}")
     @ResponseBody
     public PostResponseDTO update(@PathVariable Long id, PostRequestDTO reqDTO) {
-        return postService.update(id, reqDTO);
+        return postService.updatePost(id, reqDTO);
     }
 }

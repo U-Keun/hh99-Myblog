@@ -44,7 +44,7 @@ class PostServiceTest {
         PostRequestDTO dto = new PostRequestDTO(null, "스프링", "김무무", "스프링 재미있다", "1234");
 
         //when
-        Long getId = postService.register(dto).getId();
+        Long getId = postService.savePost(dto).getId();
 
         //then
         Assertions.assertThat(1L).isEqualTo(getId);
@@ -87,7 +87,7 @@ class PostServiceTest {
 
         //when
         dto.setId(1L);
-        postService.delete(savedId, "1234");
+        postService.deletePost(savedId, "1234");
 
         //then
         Assertions.assertThat(postRepository.findAll().size()).isEqualTo(0);
@@ -103,7 +103,7 @@ class PostServiceTest {
         PostRequestDTO updateDTO = new PostRequestDTO(null, "스프링 수정", "김무무 수정", "스프링 재미있다 수정", "1234");
 
         //when
-        postService.update(1L, updateDTO);
+        postService.updatePost(1L, updateDTO);
         String getTitle = postRepository.findById(1L).get().getTitle();
 
         //then

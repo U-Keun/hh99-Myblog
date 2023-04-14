@@ -23,6 +23,7 @@ public class PostService {
      * 전체 게시글 조회
      */
     public List<PostResponseDTO> list() {
+        //Post 객체를 PostResponseDTO 타입으로 변경하여 리스트로 반환
         return postRepository.findAll().stream()
                 .map(PostResponseDTO::new)
                 .collect(Collectors.toList());
@@ -32,7 +33,8 @@ public class PostService {
      * 게시글 등록
      */
     @Transactional
-    public PostResponseDTO register(PostRequestDTO postRequestDTO) {
+    public PostResponseDTO savePost(PostRequestDTO postRequestDTO) {
+        //PostRequestDTO 타입을 POST 타입으로 변환하여 DB에 저장
         Post savedPost = postRepository.save(postRequestDTO.toEntity());
         return new PostResponseDTO(savedPost);
     }
@@ -41,9 +43,8 @@ public class PostService {
      * 특정 게시글 조회
      */
     public PostResponseDTO findPostById(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(
-                () -> new NoSuchElementException("게시글이 존재하지 않습니다.")
-        );
+        //게시글 존재 여부 확인
+        Post post = checkPost(id);
         return new PostResponseDTO(post);
     }
 
@@ -51,17 +52,14 @@ public class PostService {
      * 게시글 삭제
      */
     @Transactional
-    public String delete(Long id, String reqPassword) {
-        Post post = postRepository.findById(id).orElseThrow(
-                () -> new NoSuchElementException("게시글이 존재하지 않습니다.")
-        );
+    public String deletePost(Long id, String reqPassword) {
+        //게시글 존재 여부 확인
+        Post post = checkPost(id);
 
         String savedPassword = post.getPassword();
 
-        //입력한 비밀번호와 저장된 비밀번호가 같으면 게시글 삭제
-        if (!savedPassword.equals(reqPassword)) {
-            throw new NoSuchElementException("게시글 비밀번호가 다릅니다.");
-        }
+        //비밀번호 일치 여부 확인
+        checkPassword(reqPassword, savedPassword);
         postRepository.deleteById(id);
 
         return "게시글 삭제 성공";
@@ -71,22 +69,33 @@ public class PostService {
      * 게시글 수정
      */
     @Transactional
-    public PostResponseDTO update(Long id, PostRequestDTO reqDTO) {
-        Post post = postRepository.findById(id).orElseThrow(
-                () -> new NoSuchElementException("게시글이 존재하지 않습니다.")
-        );
+    public PostResponseDTO updatePost(Long id, PostRequestDTO reqDTO) {
+        Post post = checkPost(id);
 
         String savedPassword = post.getPassword();
         String reqPassword = reqDTO.getPassword();
 
-        //입력한 비밀번호와 저장된 비밀번호가 같으면 게시글 수정
-        if (!savedPassword.equals(reqPassword)) {
-            throw new NoSuchElementException("게시글 비밀번호가 다릅니다.");
-        }
+        //비밀번호 일치 여부 확인
+        checkPassword(reqPassword, savedPassword);
 
         //영속성 컨텍스트로 관리되므로 DB에 변경내용이 반영됨
         //게시글 변경 내용 적용
         post.update(reqDTO);
         return new PostResponseDTO(post);
+    }
+
+    //게시글 존재 여부 확인
+    private Post checkPost(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("게시글이 존재하지 않습니다.")
+        );
+        return post;
+    }
+
+    //게시글 비밀번호 일치 여부 확인
+    private static void checkPassword(String reqPassword, String savedPassword) {
+        if (!savedPassword.equals(reqPassword)) {
+            throw new NoSuchElementException("게시글 비밀번호가 다릅니다.");
+        }
     }
 }
