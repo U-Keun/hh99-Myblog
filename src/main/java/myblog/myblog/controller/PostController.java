@@ -28,4 +28,11 @@ public class PostController {
         PostResponseDTO savedPost = postService.register(dto);
         return savedPost;
     }
+
+    @GetMapping("/{id}")
+    @ResponseBody
+    public PostResponseDTO findPost(@PathVariable Long id) {
+        PostResponseDTO findDTO = postService.findPostById(id);
+        return findDTO;
+    }
 }
