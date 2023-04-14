@@ -35,4 +35,10 @@ public class PostController {
         PostResponseDTO findDTO = postService.findPostById(id);
         return findDTO;
     }
+
+    @DeleteMapping("/delete/{id}")
+    @ResponseBody
+    public String delete(@PathVariable Long id, @RequestParam String password) {
+        return postService.delete(id, password);
+    }
 }
