@@ -50,17 +50,16 @@ public class PostService {
     /**
      * 게시글 삭제
      */
-    public void delete(Long id) throws Exception {
+    public void delete(Long id, String reqPassword) {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("게시글이 존재하지 않습니다.")
         );
 
         String savedPassword = post.getPassword();
-        String reqPassword = postRepository.findById(id).get().getPassword();
 
-        if (!savedPassword.equals(reqPassword)) {
-            throw new IllegalAccessException("잘못된 비밀번호입니다.");
+        //입력한 비밀번호와 저장된 비밀번호가 같으면 게시글 삭제
+        if (savedPassword.equals(reqPassword)) {
+            postRepository.deleteById(id);
         }
-        postRepository.deleteById(id);
     }
 }

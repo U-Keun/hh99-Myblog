@@ -78,16 +78,16 @@ class PostServiceTest {
 
     @Test
     @DisplayName("게시글 삭제")
-    public void delete() throws Exception {
+    public void delete() {
         //given
         PostRequestDTO dto = new PostRequestDTO(null, "스프링", "김무무", "스프링 재미있다", "1234");
         Long savedId = postRepository.save(dto.toEntity()).getId();
 
         //when
         dto.setId(1L);
-        postService.delete(savedId);
+        postService.delete(savedId, "1234");
 
         //then
-        Assertions.assertThat(0).isEqualTo(postRepository.findAll().size());
+        Assertions.assertThat(postRepository.findAll().size()).isEqualTo(0);
     }
 }
