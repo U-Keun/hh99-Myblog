@@ -36,4 +36,16 @@ public class PostService {
         Post savedPost = postRepository.save(postRequestDTO.toEntity());
         return new PostResponseDTO(savedPost);
     }
+
+    /**
+     * 특정 게시글 조회
+     */
+    public PostResponseDTO findPostById(Long id) {
+        Optional<Post> findPost = postRepository.findById(id);
+
+        if (!findPost.isPresent()) {
+            throw new NoSuchElementException("게시글이 존재하지 않습니다.");
+        }
+        return new PostResponseDTO(findPost.get());
+    }
 }
