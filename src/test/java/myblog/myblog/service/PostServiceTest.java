@@ -59,4 +59,19 @@ class PostServiceTest {
         //then
         Assertions.assertThat("스프링2").isEqualTo(findTitle);
     }
+
+    @Test
+    @DisplayName("게시글 삭제")
+    public void delete() throws Exception {
+        //given
+        PostRequestDTO dto = new PostRequestDTO(null, "스프링", "김무무", "스프링 재미있다", "1234");
+        Long savedId = postRepository.save(dto.toEntity()).getId();
+
+        //when
+        dto.setId(1L);
+        postService.delete(savedId);
+
+        //then
+        Assertions.assertThat(0).isEqualTo(postRepository.findAll().size());
+    }
 }
