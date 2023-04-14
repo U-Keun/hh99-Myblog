@@ -2,6 +2,7 @@ package myblog.myblog.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import myblog.myblog.domain.Post;
 
 @Data
 @NoArgsConstructor
@@ -11,6 +12,14 @@ public class PostRequestDTO {
     private String title;
     private String author;
     private String content;
-
     private String password;
+
+    public Post toEntity() {
+        return Post.builder()
+                .title(title)
+                .author(author)
+                .content(content)
+                .password(password)
+                .build();
+    }
 }
