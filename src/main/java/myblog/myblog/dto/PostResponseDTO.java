@@ -19,6 +19,7 @@ public class PostResponseDTO {
     private String author;
     private String content;
     private LocalDate createdAt;
+    private LocalDate modifiedAt;
 
     public PostResponseDTO(Post post) {
         this.id = post.getId();
@@ -26,5 +27,6 @@ public class PostResponseDTO {
         this.author = post.getAuthor();
         this.content = post.getContent();
         this.createdAt = post.getCreatedAt();
+        this.modifiedAt = post.getModifiedAt();
     }
 }
