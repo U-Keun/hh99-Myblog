@@ -90,4 +90,21 @@ class PostServiceTest {
         //then
         Assertions.assertThat(postRepository.findAll().size()).isEqualTo(0);
     }
+
+    @Test
+    @DisplayName("게시글 수정")
+    public void update() {
+        //given
+        PostRequestDTO dto = new PostRequestDTO(null, "스프링", "김무무", "스프링 재미있다", "1234");
+        postRepository.save(dto.toEntity());
+
+        PostRequestDTO updateDTO = new PostRequestDTO(null, "스프링 수정", "김무무 수정", "스프링 재미있다 수정", "1234");
+
+        //when
+        postService.update(1L, updateDTO);
+        String getTitle = postRepository.findById(1L).get().getTitle();
+
+        //then
+        Assertions.assertThat(getTitle).isEqualTo("스프링 수정");
+    }
 }
