@@ -10,6 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.NoSuchElementException;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 @SpringBootTest
 @Transactional
 class PostServiceTest {
@@ -58,6 +62,18 @@ class PostServiceTest {
 
         //then
         Assertions.assertThat("스프링2").isEqualTo(findTitle);
+    }
+
+    @Test
+    @DisplayName("특정 게시글이 존재하지 않으면 에러 발생")
+    public void findPostByIdException() {
+        //given
+        PostRequestDTO dto1 = new PostRequestDTO(null, "스프링1", "김무무", "스프링 재미있다", "1234");
+        postRepository.save(dto1.toEntity());
+
+        //when
+        //then
+        assertThrows(NoSuchElementException.class, () -> postService.findPostById(2L));
     }
 
     @Test
