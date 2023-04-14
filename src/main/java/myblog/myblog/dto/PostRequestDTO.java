@@ -1,11 +1,13 @@
 package myblog.myblog.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import myblog.myblog.domain.Post;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class PostRequestDTO {
 
     private Long id;
