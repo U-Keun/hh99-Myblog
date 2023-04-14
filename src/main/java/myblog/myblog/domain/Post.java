@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import myblog.myblog.dto.PostRequestDTO;
 
 @Getter
 @Entity
@@ -33,5 +34,11 @@ public class Post extends TimeStamped {
         this.author = author;
         this.content = content;
         this.password = password;
+    }
+
+    public void update(PostRequestDTO reqDTO) {
+        this.title = reqDTO.getTitle();
+        this.author = reqDTO.getAuthor();
+        this.content = reqDTO.getContent();
     }
 }
