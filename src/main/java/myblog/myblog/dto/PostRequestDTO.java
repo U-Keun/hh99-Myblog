@@ -14,7 +14,6 @@ public class PostRequestDTO {
     private String title;
     private String author;
     private String content;
-
     private String password;
 
     public Post toEntity() {

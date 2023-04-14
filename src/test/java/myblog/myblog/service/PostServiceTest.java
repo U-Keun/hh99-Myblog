@@ -17,8 +17,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 @Transactional
 class PostServiceTest {
-    @Autowired PostService postService;
-    @Autowired PostRepository postRepository;
+    @Autowired
+    PostService postService;
+    @Autowired
+    PostRepository postRepository;
 
     @Test
     @DisplayName("전체 게시글 조회")

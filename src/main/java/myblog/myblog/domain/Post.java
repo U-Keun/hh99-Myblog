@@ -11,7 +11,8 @@ import myblog.myblog.dto.PostRequestDTO;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends TimeStamped {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private Long id;
 
