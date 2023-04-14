@@ -41,4 +41,10 @@ public class PostController {
     public String delete(@PathVariable Long id, @RequestParam String password) {
         return postService.delete(id, password);
     }
+
+    @PutMapping("/update/{id}")
+    @ResponseBody
+    public PostResponseDTO update(@PathVariable Long id, PostRequestDTO reqDTO) {
+        return postService.update(id, reqDTO);
+    }
 }
