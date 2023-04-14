@@ -43,4 +43,20 @@ class PostServiceTest {
         //then
         Assertions.assertThat(1L).isEqualTo(getId);
     }
+
+    @Test
+    @DisplayName("특정 게시글 조회")
+    public void findPostById() {
+        //given
+        PostRequestDTO dto1 = new PostRequestDTO(null, "스프링1", "김무무", "스프링 재미있다", "1234");
+        postRepository.save(dto1.toEntity());
+        PostRequestDTO dto2 = new PostRequestDTO(null, "스프링2", "김무무", "스프링 재미있다", "1234");
+        postRepository.save(dto2.toEntity());
+
+        //when
+        String findTitle = postService.findPostById(2L).getTitle();
+
+        //then
+        Assertions.assertThat("스프링2").isEqualTo(findTitle);
+    }
 }
