@@ -15,6 +15,7 @@ public class PostController {
 
     private final PostService postService;
 
+    //전체 게시글 조회
     @GetMapping()
     @ResponseBody
     public List<PostResponseDTO> list() {
@@ -22,6 +23,7 @@ public class PostController {
         return posts;
     }
 
+    //게시글 등록
     @PostMapping()
     @ResponseBody
     public PostResponseDTO register(PostRequestDTO dto) {
@@ -29,6 +31,7 @@ public class PostController {
         return savedPost;
     }
 
+    //특정 게시글 조회
     @GetMapping("/{id}")
     @ResponseBody
     public PostResponseDTO findPost(@PathVariable Long id) {
@@ -36,12 +39,14 @@ public class PostController {
         return findDTO;
     }
 
+    //게시글 삭제
     @DeleteMapping("/delete/{id}")
     @ResponseBody
-    public String delete(@PathVariable Long id, @RequestParam String password) {
+    public String delete(@PathVariable Long id, String password) {
         return postService.deletePost(id, password);
     }
 
+    //게시글 수정
     @PutMapping("/update/{id}")
     @ResponseBody
     public PostResponseDTO update(@PathVariable Long id, PostRequestDTO reqDTO) {
