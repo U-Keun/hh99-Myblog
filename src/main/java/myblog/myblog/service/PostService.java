@@ -32,6 +32,7 @@ public class PostService {
     /**
      * 게시글 등록
      */
+    @Transactional
     public PostResponseDTO register(PostRequestDTO postRequestDTO) {
         Post savedPost = postRepository.save(postRequestDTO.toEntity());
         return new PostResponseDTO(savedPost);
@@ -50,7 +51,8 @@ public class PostService {
     /**
      * 게시글 삭제
      */
-    public void delete(Long id, String reqPassword) {
+    @Transactional
+    public String delete(Long id, String reqPassword) {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("게시글이 존재하지 않습니다.")
         );
@@ -58,8 +60,11 @@ public class PostService {
         String savedPassword = post.getPassword();
 
         //입력한 비밀번호와 저장된 비밀번호가 같으면 게시글 삭제
-        if (savedPassword.equals(reqPassword)) {
-            postRepository.deleteById(id);
+        if (!savedPassword.equals(reqPassword)) {
+            throw new NoSuchElementException("게시글 비밀번호가 다릅니다.");
         }
+        postRepository.deleteById(id);
+
+        return "게시글 삭제 성공";
     }
 }
