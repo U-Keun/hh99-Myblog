@@ -86,7 +86,7 @@ public class PostService {
     }
 
     //게시글 존재 여부 확인
-    private Post checkPost(Long id) {
+    public Post checkPost(Long id) {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("게시글이 존재하지 않습니다.")
         );
@@ -94,7 +94,7 @@ public class PostService {
     }
 
     //게시글 비밀번호 일치 여부 확인
-    private static void checkPassword(String reqPassword, String savedPassword) {
+    public void checkPassword(String reqPassword, String savedPassword) {
         if (!savedPassword.equals(reqPassword)) {
             throw new NoSuchElementException("게시글 비밀번호가 다릅니다.");
         }

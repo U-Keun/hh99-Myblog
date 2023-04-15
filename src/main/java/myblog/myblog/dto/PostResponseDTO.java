@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @Getter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 public class PostResponseDTO {
 
     private Long id;
