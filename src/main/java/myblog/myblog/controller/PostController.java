@@ -7,6 +7,7 @@ import myblog.myblog.service.PostService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("post")
@@ -26,7 +27,7 @@ public class PostController {
     //게시글 등록
     @PostMapping()
     @ResponseBody
-    public PostResponseDTO register(PostRequestDTO dto) {
+    public PostResponseDTO register(@RequestBody PostRequestDTO dto) {
         PostResponseDTO savedPost = postService.savePost(dto);
         return savedPost;
     }
@@ -42,14 +43,14 @@ public class PostController {
     //게시글 삭제
     @DeleteMapping("/delete/{id}")
     @ResponseBody
-    public String delete(@PathVariable Long id, String password) {
-        return postService.deletePost(id, password);
+    public String delete(@PathVariable Long id, @RequestBody Map<String, String> password) {
+        return postService.deletePost(id, password.get("password"));
     }
 
     //게시글 수정
     @PutMapping("/update/{id}")
     @ResponseBody
-    public PostResponseDTO update(@PathVariable Long id, PostRequestDTO reqDTO) {
+    public PostResponseDTO update(@PathVariable Long id, @RequestBody PostRequestDTO reqDTO) {
         return postService.updatePost(id, reqDTO);
     }
 }
