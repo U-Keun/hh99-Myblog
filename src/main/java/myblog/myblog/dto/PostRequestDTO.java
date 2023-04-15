@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class PostRequestDTO {
 
     private Long id;
@@ -14,4 +13,12 @@ public class PostRequestDTO {
     private String author;
     private String content;
     private String password;
+
+    public PostRequestDTO(Long id, String title, String author, String content, String password) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.content = content;
+        this.password = password;
+    }
 }
