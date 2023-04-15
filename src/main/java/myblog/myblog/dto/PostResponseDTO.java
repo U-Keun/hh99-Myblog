@@ -7,6 +7,7 @@ import lombok.ToString;
 import myblog.myblog.domain.Post;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @ToString
@@ -17,8 +18,8 @@ public class PostResponseDTO {
     private String title;
     private String author;
     private String content;
-    private LocalDate createdAt;
-    private LocalDate modifiedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 
     public PostResponseDTO(Post post) {
         this.id = post.getId();
