@@ -79,7 +79,7 @@ public class PostService {
         //비밀번호 일치 여부 확인
         checkPassword(reqPassword, savedPassword);
 
-        //영속성 컨텍스트로 관리되므로 DB에 변경내용이 반영됨
+        //더디체킹을 통해 변경 내용 적용
         //게시글 변경 내용 적용
         post.update(reqDTO);
         return new PostResponseDTO(post);
