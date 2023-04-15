@@ -1,12 +1,9 @@
 package myblog.myblog.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import myblog.myblog.domain.Post;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter

@@ -1,13 +1,11 @@
 package myblog.myblog.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import myblog.myblog.dto.PostRequestDTO;
 
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends TimeStamped {
@@ -28,13 +26,13 @@ public class Post extends TimeStamped {
     @Column(nullable = false)
     private String password;
 
+    //RequestDTO 를 Post로 변환
     @Builder
-    public Post(Long id, String title, String author, String content, String password) {
-        this.id = id;
-        this.title = title;
-        this.author = author;
-        this.content = content;
-        this.password = password;
+    public Post(PostRequestDTO requestDTO) {
+        this.title = requestDTO.getTitle();
+        this.author = requestDTO.getAuthor();
+        this.content = requestDTO.getContent();
+        this.password = requestDTO.getPassword();
     }
 
     public void update(PostRequestDTO reqDTO) {

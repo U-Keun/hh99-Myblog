@@ -36,7 +36,7 @@ public class PostService {
     @Transactional
     public PostResponseDTO savePost(PostRequestDTO postRequestDTO) {
         //PostRequestDTO 타입을 POST 타입으로 변환하여 DB에 저장
-        Post savedPost = postRepository.save(postRequestDTO.toEntity());
+        Post savedPost = postRepository.save(new Post(postRequestDTO));
         return new PostResponseDTO(savedPost);
     }
 
