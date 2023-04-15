@@ -27,7 +27,6 @@ public class Post extends TimeStamped {
     private String password;
 
     //RequestDTO 를 Post로 변환
-    @Builder
     public Post(PostRequestDTO requestDTO) {
         this.title = requestDTO.getTitle();
         this.author = requestDTO.getAuthor();
