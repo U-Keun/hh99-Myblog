@@ -32,7 +32,7 @@ class PostServiceTest {
     @DisplayName("전체 게시글 조회")
     public void findAll() {
         //given
-        PostRequestDTO dto = new PostRequestDTO(null, "스프링", "김무무", "스프링 재미있다", "1234");
+        PostRequestDTO dto = new PostRequestDTO("스프링", "김무무", "스프링 재미있다", "1234");
         Long savedId = postRepository.save(new Post(dto)).getId();
 
         //when
@@ -44,7 +44,7 @@ class PostServiceTest {
     @DisplayName("게시글 등록")
     public void register() {
         //given
-        PostRequestDTO dto = new PostRequestDTO(null, "스프링", "김무무", "스프링 재미있다", "1234");
+        PostRequestDTO dto = new PostRequestDTO("스프링", "김무무", "스프링 재미있다", "1234");
 
         //when
         Long savedId = postService.savePost(dto).getId();
@@ -58,9 +58,9 @@ class PostServiceTest {
     @DisplayName("특정 게시글 조회")
     public void findPostById() {
         //given
-        PostRequestDTO dto1 = new PostRequestDTO(null, "스프링1", "김무무", "스프링 재미있다", "1234");
+        PostRequestDTO dto1 = new PostRequestDTO("스프링1", "김무무", "스프링 재미있다", "1234");
         postRepository.save(new Post(dto1));
-        PostRequestDTO dto2 = new PostRequestDTO(null, "스프링2", "김무무", "스프링 재미있다", "1234");
+        PostRequestDTO dto2 = new PostRequestDTO("스프링2", "김무무", "스프링 재미있다", "1234");
         Long savedId = postRepository.save(new Post(dto2)).getId();
 
         //when
@@ -83,7 +83,7 @@ class PostServiceTest {
     @DisplayName("게시글 삭제")
     public void delete() {
         //given
-        PostRequestDTO dto = new PostRequestDTO(null, "스프링", "김무무", "스프링 재미있다", "1234");
+        PostRequestDTO dto = new PostRequestDTO("스프링", "김무무", "스프링 재미있다", "1234");
         Long savedId = postRepository.save(new Post(dto)).getId();
 
         //when
@@ -98,7 +98,7 @@ class PostServiceTest {
     @DisplayName("게시글 비밀번호와 일치하지 않으면 에러 발생")
     public void passwordException() {
         //given
-        PostRequestDTO dto = new PostRequestDTO(null, "스프링", "김무무", "스프링 재미있다", "1234");
+        PostRequestDTO dto = new PostRequestDTO("스프링", "김무무", "스프링 재미있다", "1234");
         String savedId = postRepository.save(new Post(dto)).getPassword();
         String reqPw = "123456";
 
@@ -112,10 +112,10 @@ class PostServiceTest {
     @DisplayName("게시글 수정")
     public void update() {
         //given
-        PostRequestDTO dto = new PostRequestDTO(null, "스프링", "김무무", "스프링 재미있다", "1234");
+        PostRequestDTO dto = new PostRequestDTO("스프링", "김무무", "스프링 재미있다", "1234");
         Long savedId = postRepository.save(new Post(dto)).getId();
 
-        PostRequestDTO updateDTO = new PostRequestDTO(null, "스프링 수정", "김무무 수정", "스프링 재미있다 수정", "1234");
+        PostRequestDTO updateDTO = new PostRequestDTO("스프링 수정", "김무무 수정", "스프링 재미있다 수정", "1234");
 
         //when
         postService.updatePost(savedId, updateDTO);
