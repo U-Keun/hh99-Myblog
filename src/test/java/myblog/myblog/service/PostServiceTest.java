@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.NoSuchElementException;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -75,7 +75,8 @@ class PostServiceTest {
 
         //when
         //then
-        assertThrows(NoSuchElementException.class, () -> postService.findPostById(2L));
+        assertThrows(NoSuchElementException.class,
+                () -> postService.findPostById(2L));
     }
 
     @Test
@@ -91,6 +92,20 @@ class PostServiceTest {
 
         //then
         Assertions.assertThat(postRepository.findAll().size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("게시글 비밀번호와 일치하지 않으면 에러 발생")
+    public void passwordException() {
+        //given
+        PostRequestDTO dto = new PostRequestDTO(null, "스프링", "김무무", "스프링 재미있다", "1234");
+        String savedId = postRepository.save(dto.toEntity()).getPassword();
+        String reqPw = "123456";
+
+        //when
+        //then
+        assertThrows(NoSuchElementException.class,
+                () -> postService.checkPassword(savedId, reqPw));
     }
 
     @Test
