@@ -11,12 +11,4 @@ public class PostRequestDTO {
     private String title;
     private String author;
     private String content;
-    private String password;
-
-    public PostRequestDTO(String title, String author, String content, String password) {
-        this.title = title;
-        this.author = author;
-        this.content = content;
-        this.password = password;
-    }
 }
