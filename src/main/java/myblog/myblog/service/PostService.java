@@ -1,9 +1,16 @@
 package myblog.myblog.service;
 
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import myblog.myblog.domain.Member;
 import myblog.myblog.domain.Post;
+import myblog.myblog.domain.StatusCode;
+import myblog.myblog.dto.MessageDTO;
 import myblog.myblog.dto.PostRequestDTO;
 import myblog.myblog.dto.PostResponseDTO;
+import myblog.myblog.jwt.JwtUtil;
+import myblog.myblog.repository.MemberRepository;
 import myblog.myblog.repository.PostRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +25,8 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final MemberRepository memberRepository;
+    private final JwtUtil jwtUtil;
 
     /**
      * 전체 게시글 조회
@@ -34,69 +43,120 @@ public class PostService {
      * 게시글 등록
      */
     @Transactional
-    public PostResponseDTO savePost(PostRequestDTO postRequestDTO) {
-        //PostRequestDTO 타입을 POST 타입으로 변환하여 DB에 저장
-        Post savedPost = postRepository.save(new Post(postRequestDTO));
-        return new PostResponseDTO(savedPost);
+    public MessageDTO savePost(PostRequestDTO postRequestDTO, HttpServletRequest request) {
+
+        Post post = new Post(postRequestDTO);
+        // Request에서 Token 가져오기
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+
+        if (token != null) {
+            // Token 검증
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("Token Error");
+            }
+            // 존재하는 회원인지 확인
+            Member member = checkMember(claims);
+
+            post.setMember(member);
+            postRepository.save(post);
+            return new MessageDTO(StatusCode.OK, "savePost success", new PostResponseDTO(post));
+        } else {
+            return new MessageDTO(StatusCode.BAD_REQUEST, "savePost fail", null);
+        }
     }
 
     /**
      * 특정 게시글 조회
      */
-    public PostResponseDTO findPostById(Long id) {
+    public MessageDTO findPostById(Long id) {
         //게시글 존재 여부 확인
         Post post = checkPost(id);
-        return new PostResponseDTO(post);
+        return new MessageDTO(StatusCode.OK, "findPost success", new PostResponseDTO(post));
     }
 
     /**
      * 게시글 삭제
      */
     @Transactional
-    public String deletePost(Long id, String reqPassword) {
-        //게시글 존재 여부 확인
-        Post post = checkPost(id);
+    public MessageDTO deletePost(Long id, HttpServletRequest request) {
 
-        String savedPassword = post.getPassword();
+        // Request에서 Token 가져오기
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
 
-        //비밀번호 일치 여부 확인
-        checkPassword(reqPassword, savedPassword);
-        postRepository.deleteById(id);
+        if (token != null) {
+            // Token 검증
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("Token Error");
+            }
+            //존재하는 회원인지 확인
+            Member member = checkMember(claims);
 
-        return "게시글 삭제 성공";
+            // 게시글 존재 여부 확인
+            Post post = checkPost(id);
+
+            post.setMember(member);
+            postRepository.save(post);
+            return new MessageDTO(StatusCode.OK, "savePost success", new PostResponseDTO(post));
+        } else {
+            return new MessageDTO(StatusCode.BAD_REQUEST, "savePost fail", null);
+        }
     }
 
     /**
      * 게시글 수정
      */
     @Transactional
-    public PostResponseDTO updatePost(Long id, PostRequestDTO reqDTO) {
-        Post post = checkPost(id);
+    public MessageDTO updatePost(Long id, PostRequestDTO requestDTO, HttpServletRequest request) {
 
-        String savedPassword = post.getPassword();
-        String reqPassword = reqDTO.getPassword();
+        // Request에서 Token 가져오기
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
 
-        //비밀번호 일치 여부 확인
-        checkPassword(reqPassword, savedPassword);
+        if (token != null) {
+            // Token 검증
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("Token Error");
+            }
 
-        //더디체킹을 통해 변경 내용 적용
-        //게시글 변경 내용 적용
-        post.update(reqDTO);
-        return new PostResponseDTO(post);
+            //존재하는 회원인지 확인
+            Member member = checkMember(claims);
+
+            // 게시글 존재 여부 확인
+            Post post = checkPost(id);
+
+            post.update(requestDTO);
+            return new MessageDTO(StatusCode.OK, "update success", new PostResponseDTO(post));
+
+        } else {
+            return new MessageDTO(StatusCode.BAD_REQUEST, "update fail", null);
+        }
     }
 
     //게시글 존재 여부 확인
-    public Post checkPost(Long id) {
+    private Post checkPost(Long id) {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("게시글이 존재하지 않습니다.")
         );
         return post;
     }
 
-    //게시글 비밀번호 일치 여부 확인
-    public void checkPassword(String reqPassword, String savedPassword) {
-        if (!savedPassword.equals(reqPassword)) {
-            throw new NoSuchElementException("게시글 비밀번호가 다릅니다.");
-        }
+
+    //회원 존재 여부 확인
+    private Member checkMember(Claims claims) {
+        Member member = memberRepository.findByUsername(claims.getSubject()).orElseThrow(
+                () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
+        );
+        return member;
     }
 }
