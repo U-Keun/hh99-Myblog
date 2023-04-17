@@ -25,7 +25,7 @@ public class MemberController {
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequestDTO loginRequestDto, HttpServletResponse response) {
-        MessageDTO messageDTO =memberService.login(loginRequestDto, response);
+        MessageDTO messageDTO =  memberService.login(loginRequestDto, response);
         return new ResponseEntity(messageDTO, HttpStatus.OK);
     }
 }
