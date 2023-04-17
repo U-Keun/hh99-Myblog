@@ -3,7 +3,6 @@ package myblog.myblog.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import myblog.myblog.dto.PostRequestDTO;
-import static jakarta.persistence.FetchType.*;
 
 @Getter
 @Entity
