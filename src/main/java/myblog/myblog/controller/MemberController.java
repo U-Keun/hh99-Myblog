@@ -3,6 +3,7 @@ package myblog.myblog.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import myblog.myblog.dto.LoginRequestDTO;
+import myblog.myblog.dto.MessageDTO;
 import myblog.myblog.dto.SignupRequestDTO;
 import myblog.myblog.service.MemberService;
 import org.springframework.http.HttpStatus;
@@ -18,13 +19,13 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity signup(@RequestBody SignupRequestDTO signupRequestDto) {
-        String result = memberService.signup(signupRequestDto);
-        return new ResponseEntity(result, HttpStatus.OK);
+        MessageDTO messageDTO = memberService.signup(signupRequestDto);
+        return new ResponseEntity(messageDTO, HttpStatus.OK);
     }
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequestDTO loginRequestDto, HttpServletResponse response) {
-        String result = memberService.login(loginRequestDto, response);
-        return new ResponseEntity(result, HttpStatus.OK);
+        MessageDTO messageDTO =memberService.login(loginRequestDto, response);
+        return new ResponseEntity(messageDTO, HttpStatus.OK);
     }
 }
