@@ -22,7 +22,4 @@ public class Member {
 
     @Column(nullable = false)
     private String password;
-
-    @OneToMany(mappedBy = "member")
-    private List<Post> posts = new ArrayList<>();
 }
