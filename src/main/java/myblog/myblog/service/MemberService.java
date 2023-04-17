@@ -69,7 +69,7 @@ public class MemberService {
 
     //비밀번호 일치 여부 체크
     private void checkPassword(String password, Member member) {
-        if(!member.getPassword().equals(password)) {
+        if (!member.getPassword().equals(password)) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
     }

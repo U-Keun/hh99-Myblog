@@ -22,22 +22,23 @@ public class PostController {
         List<PostResponseDTO> posts = postService.list();
         return posts;
     }
+
     //게시글 등록
     @PostMapping()
-    public PostResponseDTO  register(@RequestBody PostRequestDTO dto, HttpServletRequest request) {
+    public PostResponseDTO register(@RequestBody PostRequestDTO dto, HttpServletRequest request) {
         PostResponseDTO savedPost = postService.savePost(dto, request);
         return savedPost;
     }
 
     //특정 게시글 조회
     @GetMapping("/{id}")
-    public PostResponseDTO  findPost(@PathVariable Long id) {
+    public PostResponseDTO findPost(@PathVariable Long id) {
         return postService.findPostById(id);
     }
 
     //게시글 삭제
     @DeleteMapping("/delete/{id}")
-    public PostResponseDTO  delete(@PathVariable Long id, HttpServletRequest request) {
+    public PostResponseDTO delete(@PathVariable Long id, HttpServletRequest request) {
         return postService.deletePost(id, request);
     }
 
