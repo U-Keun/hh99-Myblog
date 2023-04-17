@@ -2,12 +2,11 @@ package myblog.myblog.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import myblog.myblog.dto.BasicResponseDTO;
 import myblog.myblog.dto.PostRequestDTO;
 import myblog.myblog.dto.PostResponseDTO;
 import myblog.myblog.service.PostService;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("post")
@@ -18,9 +17,8 @@ public class PostController {
 
     //전체 게시글 조회
     @GetMapping()
-    public List<PostResponseDTO> list() {
-        List<PostResponseDTO> posts = postService.list();
-        return posts;
+    public BasicResponseDTO list() {
+        return postService.list();
     }
 
     //게시글 등록

@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import myblog.myblog.domain.Member;
 import myblog.myblog.domain.Post;
+import myblog.myblog.domain.StatusCode;
+import myblog.myblog.dto.BasicResponseDTO;
 import myblog.myblog.dto.PostRequestDTO;
 import myblog.myblog.dto.PostResponseDTO;
 import myblog.myblog.jwt.JwtUtil;
@@ -29,12 +31,13 @@ public class PostService {
     /**
      * 전체 게시글 조회
      */
-    public List<PostResponseDTO> list() {
-        //작성날짜 기준 내림차순
+    public BasicResponseDTO list() {
+        //수정날짜 기준 내림차순
         //Post 객체를 PostResponseDTO 타입으로 변경하여 리스트로 반환
-        return postRepository.findAllByOrderByCreatedAtDesc().stream()
+        List<PostResponseDTO> postResponseDTOS = postRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(PostResponseDTO::new)
                 .collect(Collectors.toList());
+        return new BasicResponseDTO(StatusCode.OK, "list success", postResponseDTOS);
     }
 
     /**
