@@ -22,25 +22,24 @@ public class Post extends TimeStamped {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
-    private String password;
-
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
     //RequestDTO 를 Post로 변환
-    public Post(PostRequestDTO requestDTO) {
+    public Post(PostRequestDTO requestDTO, Member member) {
         this.title = requestDTO.getTitle();
         this.author = requestDTO.getAuthor();
         this.content = requestDTO.getContent();
-        this.password = requestDTO.getPassword();
-
+        this.member = member;
     }
 
     public void update(PostRequestDTO reqDTO) {
         this.title = reqDTO.getTitle();
-        this.author = reqDTO.getAuthor();
         this.content = reqDTO.getContent();
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 }
