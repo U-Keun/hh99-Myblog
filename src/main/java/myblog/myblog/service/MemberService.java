@@ -3,7 +3,9 @@ package myblog.myblog.service;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import myblog.myblog.domain.Member;
+import myblog.myblog.domain.StatusCode;
 import myblog.myblog.dto.LoginRequestDTO;
+import myblog.myblog.dto.MessageDTO;
 import myblog.myblog.dto.SignupRequestDTO;
 import myblog.myblog.jwt.JwtUtil;
 import myblog.myblog.repository.MemberRepository;
@@ -18,7 +20,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
 
-    public String signup(SignupRequestDTO requestDto) {
+    public MessageDTO signup(SignupRequestDTO requestDto) {
         String username = requestDto.getUsername();
         String password = requestDto.getPassword();
 
@@ -30,10 +32,10 @@ public class MemberService {
 
         Member user = new Member(username, password);
         memberRepository.save(user);
-        return "signup success";
+        return new MessageDTO(StatusCode.OK, "signup success", null);
     }
 
-    public String login(LoginRequestDTO requestDTO, HttpServletResponse response) {
+    public MessageDTO login(LoginRequestDTO requestDTO, HttpServletResponse response) {
         String username = requestDTO.getUsername();
         String password = requestDTO.getPassword();
 
@@ -49,6 +51,6 @@ public class MemberService {
 
         //응답 헤더에 토큰 추가
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(member.getUserName()));
-        return "login success";
+        return new MessageDTO(StatusCode.OK, "login success", null);
     }
 }
