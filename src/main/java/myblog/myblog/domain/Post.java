@@ -27,11 +27,10 @@ public class Post extends TimeStamped {
     private Member member;
 
     //RequestDTO 를 Post로 변환
-    public Post(PostRequestDTO requestDTO, Member member) {
+    public Post(PostRequestDTO requestDTO) {
         this.title = requestDTO.getTitle();
         this.author = requestDTO.getAuthor();
         this.content = requestDTO.getContent();
-        this.member = member;
     }
 
     public void update(PostRequestDTO reqDTO) {
