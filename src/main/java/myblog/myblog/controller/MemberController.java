@@ -8,9 +8,10 @@ import myblog.myblog.dto.SignupRequestDTO;
 import myblog.myblog.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 @RequestMapping("member")
 @RequiredArgsConstructor
 public class MemberController {
@@ -19,13 +20,11 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity signup(@RequestBody SignupRequestDTO signupRequestDto) {
-        MessageDTO messageDTO = memberService.signup(signupRequestDto);
-        return new ResponseEntity(messageDTO, HttpStatus.OK);
+        return memberService.signup(signupRequestDto);
     }
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequestDTO loginRequestDto, HttpServletResponse response) {
-        MessageDTO messageDTO =  memberService.login(loginRequestDto, response);
-        return new ResponseEntity(messageDTO, HttpStatus.OK);
+        return memberService.login(loginRequestDto, response);
     }
 }
