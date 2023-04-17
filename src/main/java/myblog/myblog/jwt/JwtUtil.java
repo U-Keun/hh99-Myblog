@@ -30,6 +30,7 @@ public class JwtUtil {
 
     @PostConstruct
     public void init() {
+        secretKey = secretKey.replace(' ', '+');
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
     }
@@ -63,6 +64,7 @@ public class JwtUtil {
 
     // 토큰 검증
     public boolean validateToken(String token) {
+        token = token.split(" ")[1].trim();
         try {
             //토큰 검증 (내부적으로 해준다)
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -81,6 +83,7 @@ public class JwtUtil {
 
     // 토큰에서 사용자 정보 가져오기
     public Claims getUserInfoFromToken(String token) {
+        token = token.split(" ")[1].trim();
         //앞에서 이미 validateToken으로 검증했다고 가정 -> try-catch가 없음
         //검증 하고, 마지막에 getBody()를 통해서 안에 들어있는 정보를 가져옴
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
