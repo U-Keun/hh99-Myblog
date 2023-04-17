@@ -15,13 +15,13 @@ public class Member {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String userName;
+    private String username;
 
     @Column(nullable = false)
     private String password;
 
-    public Member(String userName, String password) {
-        this.userName = userName;
+    public Member(String username, String password) {
+        this.username = username;
         this.password = password;
     }
 }
