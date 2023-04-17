@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
 @Entity
 @NoArgsConstructor
@@ -22,4 +19,9 @@ public class Member {
 
     @Column(nullable = false)
     private String password;
+
+    public Member(String userName, String password) {
+        this.userName = userName;
+        this.password = password;
+    }
 }
