@@ -13,4 +13,8 @@ public enum StatusCode {
         this.statusCode = statusCode;
         this.code = code;
     }
+
+    public String getCode() {
+        return code;
+    }
 }
