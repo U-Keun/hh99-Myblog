@@ -5,8 +5,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import myblog.myblog.domain.Member;
 import myblog.myblog.domain.Post;
-import myblog.myblog.domain.StatusCode;
-import myblog.myblog.dto.MessageDTO;
 import myblog.myblog.dto.PostRequestDTO;
 import myblog.myblog.dto.PostResponseDTO;
 import myblog.myblog.jwt.JwtUtil;
@@ -43,7 +41,7 @@ public class PostService {
      * 게시글 등록
      */
     @Transactional
-    public MessageDTO savePost(PostRequestDTO postRequestDTO, HttpServletRequest request) {
+    public PostResponseDTO savePost(PostRequestDTO postRequestDTO, HttpServletRequest request) {
 
         Post post = new Post(postRequestDTO);
         // Request에서 Token 가져오기
@@ -63,26 +61,26 @@ public class PostService {
 
             post.setMember(member);
             postRepository.save(post);
-            return new MessageDTO(StatusCode.OK, "savePost success", new PostResponseDTO(post));
+            return new PostResponseDTO(post);
         } else {
-            return new MessageDTO(StatusCode.BAD_REQUEST, "savePost fail", null);
+            throw new IllegalArgumentException("로그인을 해주세요.");
         }
     }
 
     /**
      * 특정 게시글 조회
      */
-    public MessageDTO findPostById(Long id) {
+    public PostResponseDTO findPostById(Long id) {
         //게시글 존재 여부 확인
         Post post = checkPost(id);
-        return new MessageDTO(StatusCode.OK, "findPost success", new PostResponseDTO(post));
+        return new PostResponseDTO(post);
     }
 
     /**
      * 게시글 삭제
      */
     @Transactional
-    public MessageDTO deletePost(Long id, HttpServletRequest request) {
+    public PostResponseDTO deletePost(Long id, HttpServletRequest request) {
 
         // Request에서 Token 가져오기
         String token = jwtUtil.resolveToken(request);
@@ -99,14 +97,16 @@ public class PostService {
             //존재하는 회원인지 확인
             Member member = checkMember(claims);
 
-            // 게시글 존재 여부 확인
+            //게시글 존재 여부 확인
             Post post = checkPost(id);
 
-            post.setMember(member);
-            postRepository.save(post);
-            return new MessageDTO(StatusCode.OK, "savePost success", new PostResponseDTO(post));
+            //작성자의 게시글인지 확인
+            isPostAuthor(member, post);
+
+            postRepository.deleteById(id);
+            return new PostResponseDTO(post);
         } else {
-            return new MessageDTO(StatusCode.BAD_REQUEST, "savePost fail", null);
+            throw new IllegalArgumentException("로그인을 해주세요.");
         }
     }
 
@@ -114,7 +114,7 @@ public class PostService {
      * 게시글 수정
      */
     @Transactional
-    public MessageDTO updatePost(Long id, PostRequestDTO requestDTO, HttpServletRequest request) {
+    public PostResponseDTO updatePost(Long id, PostRequestDTO requestDTO, HttpServletRequest request) {
 
         // Request에서 Token 가져오기
         String token = jwtUtil.resolveToken(request);
@@ -135,11 +135,14 @@ public class PostService {
             // 게시글 존재 여부 확인
             Post post = checkPost(id);
 
+            //작성자의 게시글인지 확인
+            isPostAuthor(member, post);
+
             post.update(requestDTO);
-            return new MessageDTO(StatusCode.OK, "update success", new PostResponseDTO(post));
+            return new PostResponseDTO(post);
 
         } else {
-            return new MessageDTO(StatusCode.BAD_REQUEST, "update fail", null);
+            throw new IllegalArgumentException("로그인을 해주세요.");
         }
     }
 
@@ -158,5 +161,13 @@ public class PostService {
                 () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
         );
         return member;
+    }
+
+
+    //작성자 일치 여부 판단
+    private void isPostAuthor(Member member, Post post) {
+        if (post.getMember() != member) {
+            throw new IllegalArgumentException("다른 사람이 작성한 게시글은 삭제할 수 없습니다.");
+        }
     }
 }
