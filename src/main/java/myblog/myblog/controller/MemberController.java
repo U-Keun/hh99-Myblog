@@ -1,6 +1,7 @@
 package myblog.myblog.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import myblog.myblog.dto.LoginRequestDTO;
 import myblog.myblog.dto.SignupRequestDTO;
@@ -17,7 +18,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public ResponseEntity signup(@RequestBody SignupRequestDTO signupRequestDto) {
+    public ResponseEntity signup(@Valid @RequestBody SignupRequestDTO signupRequestDto) {
         return memberService.signup(signupRequestDto);
     }
 
