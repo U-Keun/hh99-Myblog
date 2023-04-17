@@ -3,7 +3,7 @@ package myblog.myblog.dto;
 import lombok.Data;
 
 @Data
-public class LoginRequestDto {
+public class SignupRequestDTO {
     private String username;
     private String password;
 }
