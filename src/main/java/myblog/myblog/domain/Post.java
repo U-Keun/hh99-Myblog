@@ -3,9 +3,9 @@ package myblog.myblog.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import myblog.myblog.dto.PostRequestDTO;
+import static jakarta.persistence.FetchType.*;
 
 @Getter
-@Setter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends TimeStamped {
@@ -26,12 +26,18 @@ public class Post extends TimeStamped {
     @Column(nullable = false)
     private String password;
 
+    @ManyToOne
+    @Column(nullable = false)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     //RequestDTO 를 Post로 변환
-    public Post(PostRequestDTO requestDTO) {
+    public Post(PostRequestDTO requestDTO, Member member) {
         this.title = requestDTO.getTitle();
         this.author = requestDTO.getAuthor();
         this.content = requestDTO.getContent();
         this.password = requestDTO.getPassword();
+        this.member = member;
     }
 
     public void update(PostRequestDTO reqDTO) {
