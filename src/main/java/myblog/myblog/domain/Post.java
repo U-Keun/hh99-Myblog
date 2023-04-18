@@ -17,9 +17,6 @@ public class Post extends TimeStamped {
     private String title;
 
     @Column(nullable = false)
-    private String author;
-
-    @Column(nullable = false)
     private String content;
 
     @ManyToOne
@@ -29,7 +26,6 @@ public class Post extends TimeStamped {
     //RequestDTO 를 Post로 변환
     public Post(PostRequestDTO requestDTO) {
         this.title = requestDTO.getTitle();
-        this.author = requestDTO.getAuthor();
         this.content = requestDTO.getContent();
     }
 
