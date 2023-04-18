@@ -1,6 +1,6 @@
 package myblog.myblog.domain;
 
-public enum MemberStatus {
+public enum UserRole {
     USER,
     ADMIN
 }
