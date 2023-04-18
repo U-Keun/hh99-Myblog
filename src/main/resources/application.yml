@@ -4,7 +4,7 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
@@ -14,3 +14,4 @@ logging.level:
 jwt:
   secret:
     key: 7ZWt7ZW0OTntmZTsnbTtjIXtlZzqta3snYTrhIjrqLjshLjqs4TroZzrgpjslYTqsIDsnpDtm4zrpa3tlZzqsJzrsJzsnpDrpbzrp4zrk6TslrTqsIDsnpA
+
