@@ -3,7 +3,6 @@ package myblog.myblog.service;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import myblog.myblog.domain.Member;
-import myblog.myblog.domain.StatusCode;
 import myblog.myblog.dto.LoginRequestDTO;
 import myblog.myblog.dto.BasicResponseDTO;
 import myblog.myblog.dto.SignupRequestDTO;
@@ -27,9 +26,9 @@ public class MemberService {
         // 회원 중복 확인
         validateDuplicateMember(username);
 
-        Member user = new Member(username, password);
-        memberRepository.save(user);
-        BasicResponseDTO basicResponseDTO = new BasicResponseDTO(StatusCode.OK, "signup success", null);
+        Member member = new Member(username, password);
+        memberRepository.save(member);
+        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("signup success", member);
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
@@ -45,7 +44,7 @@ public class MemberService {
 
         //응답 헤더에 토큰 추가
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(member.getUsername()));
-        BasicResponseDTO basicResponseDTO = new BasicResponseDTO(StatusCode.OK, "login success", null);
+        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("login success", member);
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 

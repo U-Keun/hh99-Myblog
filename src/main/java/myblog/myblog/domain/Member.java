@@ -1,5 +1,6 @@
 package myblog.myblog.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class Member {
     private String username;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
 
     public Member(String username, String password) {

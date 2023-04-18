@@ -1,17 +1,21 @@
 package myblog.myblog.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import myblog.myblog.domain.StatusCode;
 
 @Data
-public class BasicResponseDTO {
+@AllArgsConstructor(staticName = "set")
+public class BasicResponseDTO<T> {
     private StatusCode status;
     private String message;
-    private Object data;
+    private T data;
 
-    public BasicResponseDTO(StatusCode status, String message, Object data) {
-        this.status = status;
-        this.message = message;
-        this.data = data;
+    public static <T> BasicResponseDTO<T> setSuccess(String message, T data){
+        return BasicResponseDTO.set(StatusCode.OK, message, data);
+    }
+
+    public static <T> BasicResponseDTO<T> setBadRequest(String message){
+        return BasicResponseDTO.set(StatusCode.BAD_REQUEST, message, null);
     }
 }
