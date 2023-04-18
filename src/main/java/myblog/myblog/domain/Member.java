@@ -23,8 +23,17 @@ public class Member {
     @JsonIgnore
     private String password;
 
-    public Member(String username, String password) {
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private UserRole role;
+
+    public Member(String username, String password, UserRole role) {
         this.username = username;
         this.password = password;
+        this.role = role;
+    }
+    public boolean isAdmin() {
+        if (UserRole.ADMIN == role) return true;
+        return false;
     }
 }

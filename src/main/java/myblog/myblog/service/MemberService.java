@@ -3,8 +3,10 @@ package myblog.myblog.service;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import myblog.myblog.domain.Member;
+import myblog.myblog.domain.UserRole;
 import myblog.myblog.dto.LoginRequestDTO;
 import myblog.myblog.dto.BasicResponseDTO;
+import myblog.myblog.dto.MemberResponseDTO;
 import myblog.myblog.dto.SignupRequestDTO;
 import myblog.myblog.jwt.JwtUtil;
 import myblog.myblog.repository.MemberRepository;
@@ -22,13 +24,14 @@ public class MemberService {
     public ResponseEntity signup(SignupRequestDTO requestDto) {
         String username = requestDto.getUsername();
         String password = requestDto.getPassword();
+        UserRole role = requestDto.getRole();
 
         // 회원 중복 확인
         validateDuplicateMember(username);
 
-        Member member = new Member(username, password);
+        Member member = new Member(username, password, role);
         memberRepository.save(member);
-        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("signup success", member);
+        BasicResponseDTO<MemberResponseDTO> basicResponseDTO = BasicResponseDTO.setSuccess("signup success", new MemberResponseDTO(member));
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
@@ -39,12 +42,14 @@ public class MemberService {
         //회원 체크
         Member member = validateMember(username);
 
+        UserRole role = member.getRole();
+
         //비밀번호 체크
         validatePassword(password, member);
 
         //응답 헤더에 토큰 추가
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(member.getUsername()));
-        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("login success", member);
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(member.getUsername(), role));
+        BasicResponseDTO<MemberResponseDTO> basicResponseDTO = BasicResponseDTO.setSuccess("login success", new MemberResponseDTO(member));
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
