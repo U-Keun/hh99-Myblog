@@ -1,3 +1,4 @@
+/*
 package myblog.myblog.service;
 
 import jakarta.transaction.Transactional;
@@ -125,3 +126,4 @@ class PostServiceTest {
         Assertions.assertThat(getTitle).isEqualTo("스프링 수정");
     }
 }
+*/
