@@ -13,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -40,10 +38,10 @@ public class MemberService {
         String password = requestDTO.getPassword();
 
         //회원 체크
-        Member member = chekcMember(username);
+        Member member = validateMember(username);
 
         //비밀번호 체크
-        checkPassword(password, member);
+        validatePassword(password, member);
 
         //응답 헤더에 토큰 추가
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(member.getUsername()));
@@ -52,23 +50,22 @@ public class MemberService {
     }
 
     //회원 여부 체크
-    private Member chekcMember(String username) {
-        Member member = memberRepository.findByUsername(username).orElseThrow(
+    private Member validateMember(String username) {
+        return memberRepository.findByUsername(username).orElseThrow(
                 () -> new IllegalArgumentException("등록된 회원이 없습니다.")
         );
-        return member;
     }
 
     //Id 중복 체크
     private void validateDuplicateMember(String username) {
-        Optional<Member> found = memberRepository.findByUsername(username);
-        if (found.isPresent()) {
-            throw new IllegalArgumentException("중복된 Id가 존재합니다.");
-        }
+        memberRepository.findByUsername(username)
+                .ifPresent(m -> {
+                    throw new IllegalArgumentException("중복된 ID가 존재합니다.");
+                });
     }
 
     //비밀번호 일치 여부 체크
-    private void checkPassword(String password, Member member) {
+    private void validatePassword(String password, Member member) {
         if (!member.getPassword().equals(password)) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
