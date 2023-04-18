@@ -175,7 +175,7 @@ public class PostService {
     //작성자 일치 여부 판단
     private void isPostAuthor(Member member, Post post) {
         if (post.getMember() != member) {
-            throw new IllegalArgumentException("다른 사람이 작성한 게시글은 삭제할 수 없습니다.");
+            throw new IllegalArgumentException("권한이 없습니다.");
         }
     }
 }
