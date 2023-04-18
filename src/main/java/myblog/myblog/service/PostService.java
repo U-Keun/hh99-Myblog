@@ -39,7 +39,7 @@ public class PostService {
         List<PostResponseDTO> postResponseDTOS = postRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(PostResponseDTO::new)
                 .collect(Collectors.toList());
-        BasicResponseDTO basicResponseDTO = new BasicResponseDTO(StatusCode.OK, "list success", postResponseDTOS);
+        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("list success", postResponseDTOS);
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
@@ -67,7 +67,7 @@ public class PostService {
 
             post.setMember(member);
             postRepository.save(post);
-            BasicResponseDTO basicResponseDTO = new BasicResponseDTO(StatusCode.OK, "save success", new PostResponseDTO(post));
+            BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("save success", new PostResponseDTO(post));
             return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
         } else {
             throw new IllegalArgumentException("로그인을 해주세요.");
@@ -80,7 +80,7 @@ public class PostService {
     public ResponseEntity findPostById(Long id) {
         //게시글 존재 여부 확인
         Post post = checkPost(id);
-        BasicResponseDTO basicResponseDTO = new BasicResponseDTO(StatusCode.OK, "findOne success", new PostResponseDTO(post));
+        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("findOne success", new PostResponseDTO(post));
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
@@ -112,7 +112,7 @@ public class PostService {
             isPostAuthor(member, post);
 
             postRepository.deleteById(id);
-            BasicResponseDTO basicResponseDTO = new BasicResponseDTO(StatusCode.OK, "findOne success", new PostResponseDTO(post));
+            BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("delete success", null);
             return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
         } else {
             throw new IllegalArgumentException("로그인을 해주세요.");
@@ -148,7 +148,7 @@ public class PostService {
             isPostAuthor(member, post);
 
             post.update(requestDTO);
-            BasicResponseDTO basicResponseDTO = new BasicResponseDTO(StatusCode.OK, "findOne success", new PostResponseDTO(post));
+            BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("update success", new PostResponseDTO(post));
             return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
 
         } else {
