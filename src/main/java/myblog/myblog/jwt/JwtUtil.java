@@ -7,6 +7,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import myblog.myblog.domain.UserRole;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -22,6 +23,7 @@ public class JwtUtil {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
+    public static final String AUTHORIZATION_KEY = "auth";
     private static final long TOKEN_TIME = 60 * 60 * 1000L; //60 * 1분 = 1시간
 
     @Value("${jwt.secret.key}")
@@ -48,7 +50,7 @@ public class JwtUtil {
     }
 
     // 토큰 생성
-    public String createToken(String username) {
+    public String createToken(String username, UserRole role) {
         Date date = new Date();
 
         //토큰 앞은 Bearer이 붙음
@@ -56,6 +58,7 @@ public class JwtUtil {
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(username) //subject라는 키에 username 넣음
+                        .claim(AUTHORIZATION_KEY, role) //auth 키에 사용자 권한 value 담기
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME)) //(현재시간 + 1시간)토큰 유효기간 지정
                         .setIssuedAt(date) //언제 토큰이 생성 되었는가
                         .signWith(key, signatureAlgorithm) //생성한 key 객체와 key객체를 어떤 알고리즘을 통해 암호화 할건지 지정
