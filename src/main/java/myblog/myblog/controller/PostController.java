@@ -2,7 +2,7 @@ package myblog.myblog.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import myblog.myblog.dto.PostRequestDTO;
+import myblog.myblog.dto.post.PostRequestDTO;
 import myblog.myblog.service.PostService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

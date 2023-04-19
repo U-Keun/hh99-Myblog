@@ -1,4 +1,4 @@
-package myblog.myblog.dto;
+package myblog.myblog.dto.post;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package myblog.myblog.dto;
+package myblog.myblog.dto.member;
 
 import lombok.Data;
 

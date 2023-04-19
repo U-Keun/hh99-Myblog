@@ -1,4 +1,4 @@
-package myblog.myblog.dto;
+package myblog.myblog.dto.member;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
