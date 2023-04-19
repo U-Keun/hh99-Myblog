@@ -1,17 +1,15 @@
 package myblog.myblog.service;
 
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import myblog.myblog.domain.Member;
 import myblog.myblog.domain.Post;
-import myblog.myblog.domain.StatusCode;
 import myblog.myblog.dto.BasicResponseDTO;
 import myblog.myblog.dto.PostRequestDTO;
 import myblog.myblog.dto.PostResponseDTO;
-import myblog.myblog.jwt.JwtUtil;
 import myblog.myblog.repository.MemberRepository;
 import myblog.myblog.repository.PostRepository;
+import myblog.myblog.security.TokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,7 +26,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
-    private final JwtUtil jwtUtil;
+    private final TokenProvider tokenProvider;
 
     /**
      * 전체 게시글 조회
@@ -48,30 +46,16 @@ public class PostService {
      */
     @Transactional
     public ResponseEntity savePost(PostRequestDTO postRequestDTO, HttpServletRequest request) {
-
+        String username = getUsernameFromToken(request);
         Post post = new Post(postRequestDTO);
-        // Request에서 Token 가져오기
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
 
-        if (token != null) {
-            // Token 검증
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("Token Error");
-            }
-            // 존재하는 회원인지 확인
-            Member member = checkMember(claims);
+        // 회원 레포지토리에서 회원 가져오기
+        Member member = checkMember(username);
 
-            post.setMember(member);
-            postRepository.save(post);
-            BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("save success", new PostResponseDTO(post));
-            return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
-        } else {
-            throw new IllegalArgumentException("로그인을 해주세요.");
-        }
+        post.setMember(member);
+        postRepository.save(post);
+        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("save success", new PostResponseDTO(post));
+        return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
     /**
@@ -123,37 +107,22 @@ public class PostService {
      * 게시글 수정
      */
     @Transactional
-    public ResponseEntity updatePost(Long id, PostRequestDTO requestDTO, HttpServletRequest request) {
+    public ResponseEntity updatePost(Long id, PostRequestDTO postRequestDTO, HttpServletRequest request) {
+        String username = getUsernameFromToken(request);
+        Post post = new Post(postRequestDTO);
 
-        // Request에서 Token 가져오기
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
+        // 회원 레포지토리에서 회원 가져오기
+        Member member = checkMember(username);
 
-        if (token != null) {
-            // Token 검증
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("Token Error");
-            }
+        // 게시글 존재 여부 확인
+        checkPost(id);
 
-            //존재하는 회원인지 확인
-            Member member = checkMember(claims);
+        //작성자의 게시글인지 확인
+        isPostAuthor(member, post);
 
-            // 게시글 존재 여부 확인
-            Post post = checkPost(id);
-
-            //작성자의 게시글인지 확인
-            isPostAuthor(member, post);
-
-            post.update(requestDTO);
-            BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("update success", new PostResponseDTO(post));
-            return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
-
-        } else {
-            throw new IllegalArgumentException("로그인을 해주세요.");
-        }
+        post.update(postRequestDTO);
+        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("update success", new PostResponseDTO(post));
+        return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
     //게시글 존재 여부 확인
@@ -163,19 +132,23 @@ public class PostService {
         );
     }
 
-
     //회원 존재 여부 확인
-    private Member checkMember(Claims claims) {
-        return memberRepository.findByUsername(claims.getSubject()).orElseThrow(
+    private Member checkMember(String username) {
+        return memberRepository.findByUsername(username).orElseThrow(
                 () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
         );
     }
-
 
     //작성자 일치 여부 판단
     private void isPostAuthor(Member member, Post post) {
         if (post.getMember() != member) {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
+    }
+
+    //토큰에서 사용자 정보 가져오기
+    private String getUsernameFromToken(HttpServletRequest request) {
+        String token = tokenProvider.resolveToken(request);
+        return tokenProvider.validate(token);
     }
 }

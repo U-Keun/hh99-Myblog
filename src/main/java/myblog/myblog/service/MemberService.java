@@ -8,8 +8,8 @@ import myblog.myblog.dto.LoginRequestDTO;
 import myblog.myblog.dto.BasicResponseDTO;
 import myblog.myblog.dto.MemberResponseDTO;
 import myblog.myblog.dto.SignupRequestDTO;
-import myblog.myblog.jwt.JwtUtil;
 import myblog.myblog.repository.MemberRepository;
+import myblog.myblog.security.TokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,8 @@ import org.springframework.stereotype.Service;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final JwtUtil jwtUtil;
+
+    private final TokenProvider tokenProvider;
 
     public ResponseEntity signup(SignupRequestDTO requestDto) {
         String username = requestDto.getUsername();
@@ -48,7 +49,7 @@ public class MemberService {
         validatePassword(password, member);
 
         //응답 헤더에 토큰 추가
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(member.getUsername(), role));
+        response.addHeader(tokenProvider.AUTHORIZATION_HEADER, tokenProvider.create(member.getUsername(), role));
         BasicResponseDTO<MemberResponseDTO> basicResponseDTO = BasicResponseDTO.setSuccess("login success", new MemberResponseDTO(member));
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
