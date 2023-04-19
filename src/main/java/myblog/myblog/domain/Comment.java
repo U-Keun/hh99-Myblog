@@ -16,9 +16,6 @@ public class Comment extends TimeStamped {
     private Long id;
 
     @Column(nullable = false)
-    private String username;
-
-    @Column(nullable = false)
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,8 +26,7 @@ public class Comment extends TimeStamped {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    public Comment(CommentRequestDTO commentRequestDTO, Member member) {
-        this.username = member.getUsername();
+    public Comment(CommentRequestDTO commentRequestDTO) {
         this.comment = commentRequestDTO.getComment();
     }
 
