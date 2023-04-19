@@ -1,7 +1,4 @@
 # 나만의 블로그
 
-## API 명세서
-[API 명세서](https://documenter.getpostman.com/view/26906153/2s93XzyiXH)
-
-## ERD 설계
-<img src= "https://user-images.githubusercontent.com/47537803/232893444-48bb8c92-942b-4cd3-a16f-cc707d102762.PNG" width="600" height="150">
+## API 명세서 및 ERD 설계 노션 링크
+[노션 링크](https://www.notion.so/Spring-Lv-3-ace32a3332c74aec9b45017ac86335e9)
