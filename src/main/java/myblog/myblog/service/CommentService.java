@@ -28,9 +28,12 @@ public class CommentService {
     public ResponseEntity savePost(PostRequestDTO postRequestDTO, HttpServletRequest request) {
 
         String username = getUsernameFromToken(request);
-        Comment comment = new Comment(postRequestDTO);
+        Comment comment = new Comment(commentRequestDTO);
 
-        // 회원 레포지토리에서 회원 가져오기
+        //게시글 존재 여부 확인
+        Post post = checkPost(postId);
+
+        // 회원 여부 확인
         Member member = checkMember(username);
 
         post.setMember(member);
@@ -57,16 +60,16 @@ public class CommentService {
 
         String username = getUsernameFromToken(request);
 
-        // 회원 레포지토리에서 회원 가져오기
+        //회원 레포지토리에서 회원 가져오기
         Member member = checkMember(username);
 
-        //게시글 존재 여부 확인
-        Post post = checkPost(id);
+        //댓글 존재 여부 확인
+        Comment comment = checkComment(commentId);
 
         //작성자의 게시글인지 확인
         isPostAuthor(member, post);
 
-        postRepository.deleteById(id);
+        commentRepository.deleteById(commentId);
         BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("delete success", null);
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
@@ -82,8 +85,8 @@ public class CommentService {
         // 회원 레포지토리에서 회원 가져오기
         Member member = checkMember(username);
 
-        // 게시글 존재 여부 확인
-        checkPost(id);
+        // 댓글 존재 여부 확인
+        Comment comment = checkComment(commentId);
 
         //작성자의 게시글인지 확인
         isPostAuthor(member, post);
