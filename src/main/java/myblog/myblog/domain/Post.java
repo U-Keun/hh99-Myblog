@@ -2,7 +2,9 @@ package myblog.myblog.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import myblog.myblog.dto.PostRequestDTO;
+import myblog.myblog.dto.post.PostRequestDTO;
+
+import java.util.List;
 
 @Getter
 @Entity
@@ -22,6 +24,10 @@ public class Post extends TimeStamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToMany
+    @JoinColumn(name = "comment_id")
+    private List<Comment> comments;
 
     //RequestDTO 를 Post로 변환
     public Post(PostRequestDTO requestDTO) {
