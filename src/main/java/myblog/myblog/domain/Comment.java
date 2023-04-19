@@ -25,6 +25,10 @@ public class Comment extends TimeStamped {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
+
     public Comment(CommentRequestDTO commentRequestDTO, Member member) {
         this.username = member.getUsername();
         this.comment = commentRequestDTO.getComment();
@@ -35,4 +39,8 @@ public class Comment extends TimeStamped {
     }
 
     public void setMember(Member member) { this.member = member; }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
 }

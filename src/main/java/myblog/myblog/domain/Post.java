@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import myblog.myblog.dto.post.PostRequestDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -25,9 +26,9 @@ public class Post extends TimeStamped {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany
-    @JoinColumn(name = "comment_id")
-    private List<Comment> comments;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    @OrderBy("createdAt desc")
+    private List<Comment> commentList = new ArrayList<>();
 
     //RequestDTO 를 Post로 변환
     public Post(PostRequestDTO requestDTO) {
@@ -35,12 +36,19 @@ public class Post extends TimeStamped {
         this.content = requestDTO.getContent();
     }
 
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+    // ============연관 관계 편의 메서드============
+    public void addComment(Comment comment) {
+        commentList.add(comment);
+        comment.setPost(this);
+    }
+
+    // ============ 비즈니스 메서드============
     public void update(PostRequestDTO reqDTO) {
         this.title = reqDTO.getTitle();
         this.content = reqDTO.getContent();
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
     }
 }
