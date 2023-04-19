@@ -21,13 +21,13 @@ public class PostController {
     }
 
     //게시글 삭제
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id, HttpServletRequest request) {
         return postService.deletePost(id, request);
     }
 
     //게시글 수정
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity update(@PathVariable Long id, @RequestBody PostRequestDTO reqDTO, HttpServletRequest request) {
         return postService.updatePost(id, reqDTO, request);
     }
