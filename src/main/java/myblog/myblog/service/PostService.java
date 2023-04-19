@@ -74,33 +74,20 @@ public class PostService {
     @Transactional
     public ResponseEntity deletePost(Long id, HttpServletRequest request) {
 
-        // Request에서 Token 가져오기
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
+        String username = getUsernameFromToken(request);
 
-        if (token != null) {
-            // Token 검증
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("Token Error");
-            }
-            //존재하는 회원인지 확인
-            Member member = checkMember(claims);
+        // 회원 레포지토리에서 회원 가져오기
+        Member member = checkMember(username);
 
-            //게시글 존재 여부 확인
-            Post post = checkPost(id);
+        //게시글 존재 여부 확인
+        Post post = checkPost(id);
 
-            //작성자의 게시글인지 확인
-            isPostAuthor(member, post);
+        //작성자의 게시글인지 확인
+        isPostAuthor(member, post);
 
-            postRepository.deleteById(id);
-            BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("delete success", null);
-            return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
-        } else {
-            throw new IllegalArgumentException("로그인을 해주세요.");
-        }
+        postRepository.deleteById(id);
+        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("delete success", null);
+        return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
     /**

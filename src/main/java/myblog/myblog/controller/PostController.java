@@ -14,22 +14,10 @@ public class PostController {
 
     private final PostService postService;
 
-    //전체 게시글 조회
-    @GetMapping()
-    public ResponseEntity list() {
-        return postService.list();
-    }
-
     //게시글 등록
     @PostMapping()
     public ResponseEntity register(@RequestBody PostRequestDTO dto, HttpServletRequest request) {
         return postService.savePost(dto, request);
-    }
-
-    //특정 게시글 조회
-    @GetMapping("/{id}")
-    public ResponseEntity findPost(@PathVariable Long id) {
-        return postService.findPostById(id);
     }
 
     //게시글 삭제
