@@ -8,7 +8,7 @@ import myblog.myblog.dto.member.LoginRequestDTO;
 import myblog.myblog.dto.BasicResponseDTO;
 import myblog.myblog.dto.member.MemberResponseDTO;
 import myblog.myblog.dto.member.SignupRequestDTO;
-import myblog.myblog.exception.MemberException;
+import myblog.myblog.exception.custom_exeption.MemberException;
 import myblog.myblog.repository.MemberRepository;
 import myblog.myblog.jwt.TokenProvider;
 import myblog.myblog.util.ExceptionMessage;

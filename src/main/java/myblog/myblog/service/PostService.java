@@ -1,16 +1,13 @@
 package myblog.myblog.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import myblog.myblog.domain.Member;
 import myblog.myblog.domain.Post;
 import myblog.myblog.dto.BasicResponseDTO;
 import myblog.myblog.dto.post.PostRequestDTO;
 import myblog.myblog.dto.post.PostResponseDTO;
-import myblog.myblog.exception.PostException;
-import myblog.myblog.repository.MemberRepository;
+import myblog.myblog.exception.custom_exeption.PostException;
 import myblog.myblog.repository.PostRepository;
-import myblog.myblog.jwt.TokenProvider;
 import myblog.myblog.util.ExceptionMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

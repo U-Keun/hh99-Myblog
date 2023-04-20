@@ -1,4 +1,4 @@
-package myblog.myblog.exception;
+package myblog.myblog.exception.custom_exeption;
 
 public class CommentException extends RuntimeException {
     public CommentException() {
