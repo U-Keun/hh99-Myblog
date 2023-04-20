@@ -36,8 +36,8 @@ public class TokenProvider {
     private static final String BEARER_PREFIX = "Bearer ";
     public static final String ACCESS_KEY = "ACCESS_KEY";
     public static final String REFRESH_KEY = "REFRESH_KEY";
-    private static final Date ACCESS_TIME = (Date) Date.from(Instant.now().plus(15, ChronoUnit.SECONDS));
-    private static final Date REFRESH_TIME = (Date) Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
+    private static final Date ACCESS_TIME = (Date) Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
+    private static final Date REFRESH_TIME = (Date) Date.from(Instant.now().plus(2, ChronoUnit.HOURS));
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserDetailsService userDetailsService;
 
