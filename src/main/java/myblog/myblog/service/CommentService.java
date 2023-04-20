@@ -8,10 +8,14 @@ import myblog.myblog.dto.BasicResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import myblog.myblog.dto.comment.CommentRequestDTO;
 import myblog.myblog.dto.comment.CommentResponseDTO;
+import myblog.myblog.exception.CommentException;
+import myblog.myblog.exception.MemberException;
+import myblog.myblog.exception.PostException;
 import myblog.myblog.repository.CommentRepository;
 import myblog.myblog.repository.MemberRepository;
 import myblog.myblog.repository.PostRepository;
 import myblog.myblog.security.TokenProvider;
+import myblog.myblog.util.ExceptionMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -97,21 +101,21 @@ public class CommentService {
     //댓글 존재 여부 확인
     private Comment validateComment(Long id) {
         return commentRepository.findById(id).orElseThrow(
-                () -> new NoSuchElementException("댓글이 존재하지 않습니다.")
+                () -> new CommentException(ExceptionMessage.NO_SUCH_COMMENT_EXCEPTION.getMessage())
         );
     }
 
     //게시글 존재 여부 확인
     private Post validatePost(Long id) {
         return postRepository.findById(id).orElseThrow(
-                () -> new NoSuchElementException("게시글이 존재하지 않습니다.")
+                () -> new PostException(ExceptionMessage.NO_SUCH_BOARD_EXCEPTION.getMessage())
         );
     }
 
     //회원 존재 여부 확인
     private Member validateMember(String username) {
         return memberRepository.findByUsername(username).orElseThrow(
-                () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
+                () -> new MemberException(ExceptionMessage.NO_SUCH_MEMBER_EXCEPTION.getMessage())
         );
     }
 
