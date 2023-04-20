@@ -1,7 +1,9 @@
 package myblog.myblog.jwt;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +19,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
 
@@ -33,14 +37,20 @@ public class TokenProvider {
     public static final String REFRESH_KEY = "REFRESH_KEY";
     private static final Date ACCESS_TIME = (Date) Date.from(Instant.now().plus(1, ChronoUnit.HOURS)); //60 * 1분 = 1시간
     private static final Date REFRESH_TIME = (Date) Date.from(Instant.now().plus(1, ChronoUnit.HOURS)); //2 * 60 * 1분 = 2시간
-
     private final RefreshTokenRepository refreshTokenRepository;
-
     private final UserDetailsService userDetailsService;
+
+    public Key key;
+
+    @PostConstruct
+    public void init() {
+        byte[] bytes = Base64.getDecoder().decode(SECURITY_KEY);
+        key = Keys.hmacShaKeyFor(bytes);
+    }
 
     // 액세스 토큰 및 리프레시 토큰 생성
     public TokenDTO createAllToken(String username, UserRoleEnum role) {
-        return new TokenDTO(create(username, role,"Access"), create(username, role,"Refresh"));
+        return new TokenDTO(create(username, role, "Access"), create(username, role, "Refresh"));
     }
 
     // JWT 생성하는 메서드
@@ -64,7 +74,7 @@ public class TokenProvider {
     public String resolveToken(HttpServletRequest request, String token) {
         String tokenName = token.equals("Access") ? ACCESS_KEY : REFRESH_KEY;
         //Authorization 이라는 헤더 값(토큰)을 가져옴
-        String bearerToken = request.getHeader(tokenName);
+        String bearerToken = request.getHeader(ACCESS_KEY);
         //토큰 값이 있는지, 토큰 값이 Bearer 로 시작하는지 판단
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
             //Bearer를 자른 값을 전달
@@ -77,7 +87,7 @@ public class TokenProvider {
     public boolean validateToken(String token) {
         try {
             //토큰 검증 (내부적으로 해준다)
-            Jwts.parserBuilder().setSigningKey(SECURITY_KEY).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
@@ -100,7 +110,7 @@ public class TokenProvider {
     //리프레시 토큰 검증
     public Boolean refreshTokenValidation(String token) {
         // 1차 토큰 검증
-        if(!validateToken(token)) return false;
+        if (!validateToken(token)) return false;
 
         // DB에 저장한 토큰 비교
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUsername(getUserInfoFromToken(token));
@@ -111,7 +121,7 @@ public class TokenProvider {
     // username을 토큰에서 추출
     public String getUserInfoFromToken(String token) {
         // 매개변수로 받은 token을 키를 사용해서 복호화 (디코딩)
-        Claims claims = Jwts.parser().setSigningKey(SECURITY_KEY).parseClaimsJws(token).getBody();
+        Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
         // 복호화된 토큰의 payload에서 제목을 가져옴
         return claims.getSubject();
     }
