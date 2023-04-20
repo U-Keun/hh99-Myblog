@@ -81,7 +81,7 @@ public class MemberService {
 
     //비밀번호 일치 여부 체크
     private void validatePassword(String password, Member member) {
-        if (!member.getPassword().equals(password)) {
+        if (!passwordEncoder.matches(password, member.getPassword())) {
             throw new MemberException(ExceptionMessage.NOT_MATCHING_PASSWORD_EXCEPTION.getMessage());
         }
     }
