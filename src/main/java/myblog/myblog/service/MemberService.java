@@ -8,8 +8,10 @@ import myblog.myblog.dto.member.LoginRequestDTO;
 import myblog.myblog.dto.BasicResponseDTO;
 import myblog.myblog.dto.member.MemberResponseDTO;
 import myblog.myblog.dto.member.SignupRequestDTO;
+import myblog.myblog.exception.MemberException;
 import myblog.myblog.repository.MemberRepository;
 import myblog.myblog.security.TokenProvider;
+import myblog.myblog.util.ExceptionMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,6 @@ import org.springframework.stereotype.Service;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-
     private final TokenProvider tokenProvider;
 
     public ResponseEntity signup(SignupRequestDTO requestDto) {
@@ -57,7 +58,7 @@ public class MemberService {
     //회원 여부 체크
     private Member validateMember(String username) {
         return memberRepository.findByUsername(username).orElseThrow(
-                () -> new IllegalArgumentException("등록된 회원이 없습니다.")
+                () -> new MemberException(ExceptionMessage.NO_SUCH_MEMBER_EXCEPTION.getMessage())
         );
     }
 
@@ -65,14 +66,14 @@ public class MemberService {
     private void validateDuplicateMember(String username) {
         memberRepository.findByUsername(username)
                 .ifPresent(m -> {
-                    throw new IllegalArgumentException("중복된 ID가 존재합니다.");
+                    throw new MemberException(ExceptionMessage.DUPLICATE_ID_EXCEPTION.getMessage());
                 });
     }
 
     //비밀번호 일치 여부 체크
     private void validatePassword(String password, Member member) {
         if (!member.getPassword().equals(password)) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new MemberException(ExceptionMessage.NOT_MATCHING_PASSWORD_EXCEPTION.getMessage());
         }
     }
 }

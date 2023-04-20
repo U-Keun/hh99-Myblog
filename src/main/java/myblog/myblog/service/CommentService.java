@@ -17,8 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.NoSuchElementException;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -38,10 +36,10 @@ public class CommentService {
         Comment comment = new Comment(commentRequestDTO);
 
         //게시글 존재 여부 확인
-        Post post = checkPost(postId);
+        Post post = validatePost(postId);
 
         // 회원 여부 확인
-        Member member = checkMember(username);
+        Member member = validateMember(username);
 
         // post의 댓글 리스트에 추가
         post.addComment(comment);
@@ -61,10 +59,10 @@ public class CommentService {
         String username = getUsernameFromToken(request);
 
         //회원 레포지토리에서 회원 가져오기
-        Member member = checkMember(username);
+        Member member = validateMember(username);
 
         //댓글 존재 여부 확인
-        Comment comment = checkComment(commentId);
+        Comment comment = validateComment(commentId);
 
         //작성자의 댓글인지 확인
         isCommentAuthor(member, comment);
@@ -83,10 +81,10 @@ public class CommentService {
         String username = getUsernameFromToken(request);
 
         // 회원 레포지토리에서 회원 가져오기
-        Member member = checkMember(username);
+        Member member = validateMember(username);
 
         // 댓글 존재 여부 확인
-        Comment comment = checkComment(commentId);
+        Comment comment = validateComment(commentId);
 
         //작성자의 게시글인지 확인
         isCommentAuthor(member, comment);
@@ -97,20 +95,21 @@ public class CommentService {
     }
 
     //댓글 존재 여부 확인
-    private Comment checkComment(Long id) {
+    private Comment validateComment(Long id) {
         return commentRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("댓글이 존재하지 않습니다.")
         );
     }
 
     //게시글 존재 여부 확인
-    private Post checkPost(Long id) {
+    private Post validatePost(Long id) {
         return postRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("게시글이 존재하지 않습니다.")
         );
     }
+
     //회원 존재 여부 확인
-    private Member checkMember(String username) {
+    private Member validateMember(String username) {
         return memberRepository.findByUsername(username).orElseThrow(
                 () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
         );
@@ -119,7 +118,8 @@ public class CommentService {
     //작성자 일치 여부 판단
     private void isCommentAuthor(Member member, Comment comment) {
         if (comment.getMember() != member) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            if (member.isAdmin()) return;
+            throw new CommentException(ExceptionMessage.NO_AUTHORIZATION_EXCEPTION.getMessage());
         }
     }
 
