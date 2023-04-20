@@ -5,6 +5,7 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import myblog.myblog.domain.RefreshToken;
@@ -121,8 +122,17 @@ public class TokenProvider {
     // username을 토큰에서 추출
     public String getUserInfoFromToken(String token) {
         // 매개변수로 받은 token을 키를 사용해서 복호화 (디코딩)
-        Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
-        // 복호화된 토큰의 payload에서 제목을 가져옴
-        return claims.getSubject();
+        // 복호화된 토큰의 payload에서 subject에 담긴 것을 가져옴
+        return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    //액세스 토큰 헤더 설정
+    public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
+        response.setHeader(ACCESS_KEY, accessToken);
+    }
+
+    // 리프레시 토큰 헤더 설정
+    public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
+        response.setHeader(REFRESH_KEY, refreshToken);
     }
 }
