@@ -70,9 +70,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // SecurityContext 에 Authentication 객체를 저장
     public void setAuthentication(String username) {
         Authentication authentication = tokenProvider.createAuthentication(username);
-        context.setAuthentication(authentication);
-
-        SecurityContextHolder.setContext(context);
+        // security가 만들어주는 securityContextHolder 그 안에 authentication을 넣음
+        // security가 securitycontextholder에서 인증 객체를 확인
+        // JwtAuthenticationFilter에서 authentication을 넣어주면 UsernamePasswordAuthenticationFilter 내부에서 인증이 된 것을 확인하고 추가적인 작업을 진행하지 않음
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     // 예외 처리 핸들러
