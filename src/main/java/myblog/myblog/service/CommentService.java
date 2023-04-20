@@ -14,7 +14,7 @@ import myblog.myblog.exception.PostException;
 import myblog.myblog.repository.CommentRepository;
 import myblog.myblog.repository.MemberRepository;
 import myblog.myblog.repository.PostRepository;
-import myblog.myblog.security.TokenProvider;
+import myblog.myblog.jwt.TokenProvider;
 import myblog.myblog.util.ExceptionMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +36,7 @@ public class CommentService {
      */
     @Transactional
     public ResponseEntity saveComment(Long postId, CommentRequestDTO commentRequestDTO, HttpServletRequest request) {
-        String username = getUsernameFromToken(request);
+        String username = getUserInfoFromToken(request);
         Comment comment = new Comment(commentRequestDTO);
 
         //게시글 존재 여부 확인
@@ -60,7 +60,7 @@ public class CommentService {
     @Transactional
     public ResponseEntity deleteComment(Long commentId, HttpServletRequest request) {
 
-        String username = getUsernameFromToken(request);
+        String username = getUserInfoFromToken(request);
 
         //회원 레포지토리에서 회원 가져오기
         Member member = validateMember(username);
@@ -82,7 +82,7 @@ public class CommentService {
     @Transactional
     public ResponseEntity updateComment(Long commentId, CommentRequestDTO commentRequestDTO, HttpServletRequest request) {
 
-        String username = getUsernameFromToken(request);
+        String username = getUserInfoFromToken(request);
 
         // 회원 레포지토리에서 회원 가져오기
         Member member = validateMember(username);
@@ -128,8 +128,8 @@ public class CommentService {
     }
 
     //토큰에서 사용자 정보 가져오기
-    private String getUsernameFromToken(HttpServletRequest request) {
-        String token = tokenProvider.resolveToken(request);
-        return tokenProvider.validate(token);
+    private String getUserInfoFromToken(HttpServletRequest request) {
+        String token = tokenProvider.resolveToken(request, "Access");
+        return tokenProvider.getUserInfoFromToken(token);
     }
 }

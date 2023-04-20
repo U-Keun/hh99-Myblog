@@ -11,7 +11,7 @@ import myblog.myblog.exception.MemberException;
 import myblog.myblog.exception.PostException;
 import myblog.myblog.repository.MemberRepository;
 import myblog.myblog.repository.PostRepository;
-import myblog.myblog.security.TokenProvider;
+import myblog.myblog.jwt.TokenProvider;
 import myblog.myblog.util.ExceptionMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +48,7 @@ public class PostService {
      */
     @Transactional
     public ResponseEntity savePost(PostRequestDTO postRequestDTO, HttpServletRequest request) {
-        String username = getUsernameFromToken(request);
+        String username = getUserInfoFromToken(request);
         Post post = new Post(postRequestDTO);
 
         // 회원 레포지토리에서 회원 가져오기
@@ -75,7 +75,7 @@ public class PostService {
      */
     @Transactional
     public ResponseEntity deletePost(Long id, HttpServletRequest request) {
-        String username = getUsernameFromToken(request);
+        String username = getUserInfoFromToken(request);
 
         // 회원 레포지토리에서 회원 가져오기
         Member member = validateMember(username);
@@ -96,7 +96,7 @@ public class PostService {
      */
     @Transactional
     public ResponseEntity updatePost(Long id, PostRequestDTO postRequestDTO, HttpServletRequest request) {
-        String username = getUsernameFromToken(request);
+        String username = getUserInfoFromToken(request);
 
         // 회원 레포지토리에서 회원 가져오기
         Member member = validateMember(username);
@@ -135,8 +135,8 @@ public class PostService {
     }
 
     //토큰에서 사용자 정보 가져오기
-    private String getUsernameFromToken(HttpServletRequest request) {
-        String token = tokenProvider.resolveToken(request);
-        return tokenProvider.validate(token);
+    private String getUserInfoFromToken(HttpServletRequest request) {
+        String token = tokenProvider.resolveToken(request, "Access");
+        return tokenProvider.getUserInfoFromToken(token);
     }
 }
