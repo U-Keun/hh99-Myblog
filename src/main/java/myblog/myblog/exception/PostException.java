@@ -1,6 +1,6 @@
 package myblog.myblog.exception;
 
-public class PostException extends RuntimeException{
+public class PostException extends RuntimeException {
     public PostException() {
         super();
     }

@@ -32,6 +32,7 @@ public class Member {
         this.password = password;
         this.role = role;
     }
+
     public boolean isAdmin() {
         if (UserRole.ADMIN == role) return true;
         return false;

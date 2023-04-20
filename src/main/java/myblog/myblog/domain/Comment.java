@@ -34,7 +34,9 @@ public class Comment extends TimeStamped {
         this.comment = commentRequestDTO.getComment();
     }
 
-    public void setMember(Member member) { this.member = member; }
+    public void setMember(Member member) {
+        this.member = member;
+    }
 
     public void setPost(Post post) {
         this.post = post;

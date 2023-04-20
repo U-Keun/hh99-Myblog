@@ -40,9 +40,9 @@ public class CommentController {
         }
         return responseEntity;
     }
-    
+
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody CommentRequestDTO requestDTO ,HttpServletRequest request) {
+    public ResponseEntity update(@PathVariable Long id, @RequestBody CommentRequestDTO requestDTO, HttpServletRequest request) {
         ResponseEntity responseEntity;
         try {
             responseEntity = commentService.updateComment(id, requestDTO, request);
