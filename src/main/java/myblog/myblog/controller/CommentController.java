@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import myblog.myblog.dto.BasicResponseDTO;
 import myblog.myblog.dto.comment.CommentRequestDTO;
-import myblog.myblog.exception.CommentException;
+
 import myblog.myblog.service.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

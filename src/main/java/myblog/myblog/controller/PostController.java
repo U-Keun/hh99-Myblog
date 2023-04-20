@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import myblog.myblog.dto.BasicResponseDTO;
 import myblog.myblog.dto.post.PostRequestDTO;
-import myblog.myblog.exception.PostException;
 import myblog.myblog.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
