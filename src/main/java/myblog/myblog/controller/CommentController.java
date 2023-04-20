@@ -18,10 +18,14 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/{id}")
-    public ResponseEntity register(@PathVariable Long id, @RequestBody CommentRequestDTO dto, HttpServletRequest request) {
+    public ResponseEntity register(
+            @PathVariable Long id,
+            @RequestBody CommentRequestDTO dto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         ResponseEntity responseEntity;
         try {
-            responseEntity = commentService.saveComment(id, dto, request);
+            responseEntity = commentService.saveComment(id, dto, userDetails.getMember());
         } catch (Exception e) {
             BasicResponseDTO basicResponseDTO = BasicResponseDTO.setBadRequest(e.getMessage());
             responseEntity = new ResponseEntity(basicResponseDTO, HttpStatus.BAD_REQUEST);

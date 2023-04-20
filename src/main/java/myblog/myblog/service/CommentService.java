@@ -24,8 +24,6 @@ public class CommentService {
 
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
-    private final MemberRepository memberRepository;
-    private final TokenProvider tokenProvider;
 
     /**
      * 댓글 등록
@@ -70,7 +68,7 @@ public class CommentService {
         // 댓글 존재 여부 확인
         Comment comment = validateComment(commentId);
 
-        //작성자의 게시글인지 확인
+        //작성자의 댓글인지 확인
         isCommentAuthor(member, comment);
 
         comment.update(commentRequestDTO);
@@ -92,24 +90,11 @@ public class CommentService {
         );
     }
 
-    //회원 존재 여부 확인
-    private Member validateMember(String username) {
-        return memberRepository.findByUsername(username).orElseThrow(
-                () -> new MemberException(ExceptionMessage.NO_SUCH_MEMBER_EXCEPTION.getMessage())
-        );
-    }
-
     //작성자 일치 여부 판단
     private void isCommentAuthor(Member member, Comment comment) {
-        if (comment.getMember() != member) {
+        if (!comment.getMember().getUsername().equals(member.getUsername())) {
             if (member.isAdmin()) return;
             throw new CommentException(ExceptionMessage.NO_AUTHORIZATION_EXCEPTION.getMessage());
         }
-    }
-
-    //토큰에서 사용자 정보 가져오기
-    private String getUserInfoFromToken(HttpServletRequest request) {
-        String token = tokenProvider.resolveToken(request, "Access");
-        return tokenProvider.getUserInfoFromToken(token);
     }
 }

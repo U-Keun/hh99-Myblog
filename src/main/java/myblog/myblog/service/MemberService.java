@@ -52,7 +52,7 @@ public class MemberService {
         String username = requestDTO.getUsername();
         String password = requestDTO.getPassword();
 
-        //회원 체크
+        // 회원 여부 체크
         Member member = validateMember(username);
 
         //비밀번호 체크

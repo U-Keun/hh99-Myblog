@@ -102,16 +102,9 @@ public class PostService {
         );
     }
 
-    //회원 존재 여부 확인
-    private Member validateMember(String username) {
-        return memberRepository.findByUsername(username).orElseThrow(
-                () -> new MemberException(ExceptionMessage.NO_SUCH_MEMBER_EXCEPTION.getMessage())
-        );
-    }
-
     //작성자 일치 여부 판단
     private void isPostAuthor(Member member, Post post) {
-        if (post.getMember() != member) {
+        if (!post.getMember().getUsername().equals(member.getUsername())) {
             if (member.isAdmin()) return;
             throw new PostException(ExceptionMessage.NO_AUTHORIZATION_EXCEPTION.getMessage());
         }
