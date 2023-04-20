@@ -25,16 +25,16 @@ public class Member {
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private UserRole role;
+    private UserRoleEnum role;
 
-    public Member(String username, String password, UserRole role) {
+    public Member(String username, String password, UserRoleEnum role) {
         this.username = username;
         this.password = password;
         this.role = role;
     }
 
     public boolean isAdmin() {
-        if (UserRole.ADMIN == role) return true;
+        if (UserRoleEnum.ADMIN == role) return true;
         return false;
     }
 }
