@@ -1,13 +1,12 @@
 package myblog.myblog.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import myblog.myblog.domain.Member;
 import myblog.myblog.domain.Post;
 import myblog.myblog.dto.BasicResponseDTO;
 import myblog.myblog.dto.post.PostRequestDTO;
 import myblog.myblog.dto.post.PostResponseDTO;
-import myblog.myblog.exception.MemberException;
 import myblog.myblog.exception.PostException;
 import myblog.myblog.repository.MemberRepository;
 import myblog.myblog.repository.PostRepository;
@@ -27,8 +26,6 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final MemberRepository memberRepository;
-    private final TokenProvider tokenProvider;
 
     /**
      * 전체 게시글 조회
@@ -47,14 +44,10 @@ public class PostService {
      * 게시글 등록
      */
     @Transactional
-    public ResponseEntity savePost(PostRequestDTO postRequestDTO, HttpServletRequest request) {
-        String username = getUserInfoFromToken(request);
+    public ResponseEntity savePost(PostRequestDTO postRequestDTO, Member member) {
         Post post = new Post(postRequestDTO);
-
-        // 회원 레포지토리에서 회원 가져오기
-        Member member = validateMember(username);
-
         post.setMember(member);
+
         postRepository.save(post);
         BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("save success", new PostResponseDTO(post));
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
@@ -74,12 +67,7 @@ public class PostService {
      * 게시글 삭제
      */
     @Transactional
-    public ResponseEntity deletePost(Long id, HttpServletRequest request) {
-        String username = getUserInfoFromToken(request);
-
-        // 회원 레포지토리에서 회원 가져오기
-        Member member = validateMember(username);
-
+    public ResponseEntity deletePost(Long id, Member member) {
         //게시글 존재 여부 확인
         Post post = validatePost(id);
 
@@ -95,12 +83,7 @@ public class PostService {
      * 게시글 수정
      */
     @Transactional
-    public ResponseEntity updatePost(Long id, PostRequestDTO postRequestDTO, HttpServletRequest request) {
-        String username = getUserInfoFromToken(request);
-
-        // 회원 레포지토리에서 회원 가져오기
-        Member member = validateMember(username);
-
+    public ResponseEntity updatePost(Long id, PostRequestDTO postRequestDTO, Member member) {
         // 게시글 존재 여부 확인
         Post post = validatePost(id);
 
@@ -132,11 +115,5 @@ public class PostService {
             if (member.isAdmin()) return;
             throw new PostException(ExceptionMessage.NO_AUTHORIZATION_EXCEPTION.getMessage());
         }
-    }
-
-    //토큰에서 사용자 정보 가져오기
-    private String getUserInfoFromToken(HttpServletRequest request) {
-        String token = tokenProvider.resolveToken(request, "Access");
-        return tokenProvider.getUserInfoFromToken(token);
     }
 }

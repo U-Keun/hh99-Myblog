@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import myblog.myblog.dto.BasicResponseDTO;
 import myblog.myblog.dto.member.LoginRequestDTO;
 import myblog.myblog.dto.member.SignupRequestDTO;
-import myblog.myblog.exception.MemberException;
 import myblog.myblog.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +32,10 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody LoginRequestDTO loginRequestDto, HttpServletResponse response) {
+    public ResponseEntity login(
+            @RequestBody LoginRequestDTO loginRequestDto,
+            HttpServletResponse response
+    ) {
         ResponseEntity responseEntity;
         try {
             responseEntity = memberService.login(loginRequestDto, response);

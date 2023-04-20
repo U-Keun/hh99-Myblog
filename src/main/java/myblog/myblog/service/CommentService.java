@@ -5,16 +5,12 @@ import myblog.myblog.domain.Comment;
 import myblog.myblog.domain.Member;
 import myblog.myblog.domain.Post;
 import myblog.myblog.dto.BasicResponseDTO;
-import jakarta.servlet.http.HttpServletRequest;
 import myblog.myblog.dto.comment.CommentRequestDTO;
 import myblog.myblog.dto.comment.CommentResponseDTO;
 import myblog.myblog.exception.CommentException;
-import myblog.myblog.exception.MemberException;
 import myblog.myblog.exception.PostException;
 import myblog.myblog.repository.CommentRepository;
-import myblog.myblog.repository.MemberRepository;
 import myblog.myblog.repository.PostRepository;
-import myblog.myblog.jwt.TokenProvider;
 import myblog.myblog.util.ExceptionMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,15 +31,11 @@ public class CommentService {
      * 댓글 등록
      */
     @Transactional
-    public ResponseEntity saveComment(Long postId, CommentRequestDTO commentRequestDTO, HttpServletRequest request) {
-        String username = getUserInfoFromToken(request);
+    public ResponseEntity saveComment(Long postId, CommentRequestDTO commentRequestDTO, Member member) {
         Comment comment = new Comment(commentRequestDTO);
 
         //게시글 존재 여부 확인
         Post post = validatePost(postId);
-
-        // 회원 여부 확인
-        Member member = validateMember(username);
 
         // post의 댓글 리스트에 추가
         post.addComment(comment);
@@ -58,13 +50,7 @@ public class CommentService {
      * 댓글 삭제
      */
     @Transactional
-    public ResponseEntity deleteComment(Long commentId, HttpServletRequest request) {
-
-        String username = getUserInfoFromToken(request);
-
-        //회원 레포지토리에서 회원 가져오기
-        Member member = validateMember(username);
-
+    public ResponseEntity deleteComment(Long commentId, Member member) {
         //댓글 존재 여부 확인
         Comment comment = validateComment(commentId);
 
@@ -80,13 +66,7 @@ public class CommentService {
      * 댓글 수정
      */
     @Transactional
-    public ResponseEntity updateComment(Long commentId, CommentRequestDTO commentRequestDTO, HttpServletRequest request) {
-
-        String username = getUserInfoFromToken(request);
-
-        // 회원 레포지토리에서 회원 가져오기
-        Member member = validateMember(username);
-
+    public ResponseEntity updateComment(Long commentId, CommentRequestDTO commentRequestDTO, Member member) {
         // 댓글 존재 여부 확인
         Comment comment = validateComment(commentId);
 
