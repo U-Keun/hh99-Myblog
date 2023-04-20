@@ -1,4 +1,4 @@
-package myblog.myblog.exception;
+package myblog.myblog.exception.custom_exeption;
 
 public class MemberException extends RuntimeException {
     public MemberException() {
