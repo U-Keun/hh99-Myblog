@@ -1,6 +1,7 @@
 package myblog.myblog.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import myblog.myblog.domain.Comment;
 import myblog.myblog.domain.Member;
 import myblog.myblog.domain.Post;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CommentService {
@@ -49,6 +51,7 @@ public class CommentService {
      */
     @Transactional
     public ResponseEntity deleteComment(Long commentId, Member member) {
+        log.info("댓글 삭제");
         //댓글 존재 여부 확인
         Comment comment = validateComment(commentId);
 

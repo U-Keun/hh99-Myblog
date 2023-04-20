@@ -21,6 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 
@@ -66,9 +68,18 @@ public class MemberService {
         TokenDTO tokenDto = tokenProvider.createAllToken(requestDTO.getUsername(), member.getRole());
 
         //Refresh 토큰 있는지 확인
-        refreshTokenRepository.findByUsername(requestDTO.getUsername());
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUsername(requestDTO.getUsername());
 
-
+        //Refresh 토큰이 있다면 새로 발급 후 업데이트
+        //없다면 새로 만들고 DB에 저장
+        if (refreshToken.isPresent()) {
+            RefreshToken savedRefreshToken = refreshToken.get();
+            RefreshToken updateToken = savedRefreshToken.updateToken(tokenDto.getRefreshToken().substring(7));
+            refreshTokenRepository.save(updateToken);
+        } else {
+            RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken().substring(7), username);
+            refreshTokenRepository.save(newToken);
+        }
 
         //응답 헤더에 토큰 추가
         setHeader(response, tokenDto);

@@ -36,8 +36,8 @@ public class TokenProvider {
     private static final String BEARER_PREFIX = "Bearer ";
     public static final String ACCESS_KEY = "ACCESS_KEY";
     public static final String REFRESH_KEY = "REFRESH_KEY";
-    private static final Date ACCESS_TIME = (Date) Date.from(Instant.now().plus(1, ChronoUnit.HOURS)); //60 * 1분 = 1시간
-    private static final Date REFRESH_TIME = (Date) Date.from(Instant.now().plus(1, ChronoUnit.HOURS)); //2 * 60 * 1분 = 2시간
+    private static final Date ACCESS_TIME = (Date) Date.from(Instant.now().plus(15, ChronoUnit.SECONDS));
+    private static final Date REFRESH_TIME = (Date) Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserDetailsService userDetailsService;
 
@@ -75,7 +75,7 @@ public class TokenProvider {
     public String resolveToken(HttpServletRequest request, String token) {
         String tokenName = token.equals("Access") ? ACCESS_KEY : REFRESH_KEY;
         //Authorization 이라는 헤더 값(토큰)을 가져옴
-        String bearerToken = request.getHeader(ACCESS_KEY);
+        String bearerToken = request.getHeader(tokenName);
         //토큰 값이 있는지, 토큰 값이 Bearer 로 시작하는지 판단
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
             //Bearer를 자른 값을 전달
@@ -86,10 +86,11 @@ public class TokenProvider {
 
     // 토큰 검증
     public boolean validateToken(String token) {
+        boolean result = false;
         try {
             //토큰 검증 (내부적으로 해준다)
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
+            result = true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
         } catch (ExpiredJwtException e) {
@@ -129,10 +130,5 @@ public class TokenProvider {
     //액세스 토큰 헤더 설정
     public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
         response.setHeader(ACCESS_KEY, accessToken);
-    }
-
-    // 리프레시 토큰 헤더 설정
-    public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
-        response.setHeader(REFRESH_KEY, refreshToken);
     }
 }
