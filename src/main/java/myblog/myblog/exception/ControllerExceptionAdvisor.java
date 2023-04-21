@@ -1,6 +1,6 @@
 package myblog.myblog.exception;
 
-import myblog.myblog.dto.BasicResponseDTO;
+import myblog.myblog.dto.BasicResponseDto;
 import myblog.myblog.exception.custom_exeption.CommentException;
 import myblog.myblog.exception.custom_exeption.MemberException;
 import myblog.myblog.exception.custom_exeption.PostException;
@@ -42,7 +42,7 @@ public class ControllerExceptionAdvisor {
     @ExceptionHandler({MemberException.class, PostException.class, CommentException.class})
     public ResponseEntity memberExceptionHandler(Exception exception) {
         String message = exception.getMessage();
-        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setBadRequest(message);
+        BasicResponseDto basicResponseDTO = BasicResponseDto.setBadRequest(message);
         return new ResponseEntity(basicResponseDTO, HttpStatus.BAD_REQUEST);
     }
 }

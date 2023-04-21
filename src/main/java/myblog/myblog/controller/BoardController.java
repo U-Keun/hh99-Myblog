@@ -1,7 +1,7 @@
 package myblog.myblog.controller;
 
 import lombok.RequiredArgsConstructor;
-import myblog.myblog.dto.BasicResponseDTO;
+import myblog.myblog.dto.BasicResponseDto;
 import myblog.myblog.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +30,7 @@ public class BoardController {
         try {
             responseEntity = postService.findPostById(id);
         } catch (Exception e) {
-            BasicResponseDTO basicResponseDTO = BasicResponseDTO.setBadRequest(e.getMessage());
+            BasicResponseDto basicResponseDTO = BasicResponseDto.setBadRequest(e.getMessage());
             responseEntity = new ResponseEntity(basicResponseDTO, HttpStatus.BAD_REQUEST);
         }
         return responseEntity;

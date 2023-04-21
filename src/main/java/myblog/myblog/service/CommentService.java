@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import myblog.myblog.domain.Comment;
 import myblog.myblog.domain.Member;
 import myblog.myblog.domain.Post;
-import myblog.myblog.dto.BasicResponseDTO;
-import myblog.myblog.dto.comment.CommentRequestDTO;
-import myblog.myblog.dto.comment.CommentResponseDTO;
+import myblog.myblog.dto.BasicResponseDto;
+import myblog.myblog.dto.comment.CommentRequestDto;
+import myblog.myblog.dto.comment.CommentResponseDto;
 import myblog.myblog.exception.custom_exeption.CommentException;
 import myblog.myblog.exception.custom_exeption.PostException;
 import myblog.myblog.repository.CommentRepository;
@@ -31,7 +31,7 @@ public class CommentService {
      * 댓글 등록
      */
     @Transactional
-    public ResponseEntity saveComment(Long postId, CommentRequestDTO commentRequestDTO, Member member) {
+    public ResponseEntity saveComment(Long postId, CommentRequestDto commentRequestDTO, Member member) {
         Comment comment = new Comment(commentRequestDTO);
 
         //게시글 존재 여부 확인
@@ -42,7 +42,7 @@ public class CommentService {
         comment.setMember(member);
 
         commentRepository.save(comment);
-        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("save success", new CommentResponseDTO(comment));
+        BasicResponseDto basicResponseDTO = BasicResponseDto.setSuccess("save success", new CommentResponseDto(comment));
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
@@ -59,7 +59,7 @@ public class CommentService {
         isCommentAuthor(member, comment);
 
         commentRepository.deleteById(commentId);
-        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("delete success", null);
+        BasicResponseDto basicResponseDTO = BasicResponseDto.setSuccess("delete success", null);
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
@@ -67,7 +67,7 @@ public class CommentService {
      * 댓글 수정
      */
     @Transactional
-    public ResponseEntity updateComment(Long commentId, CommentRequestDTO commentRequestDTO, Member member) {
+    public ResponseEntity updateComment(Long commentId, CommentRequestDto commentRequestDTO, Member member) {
         // 댓글 존재 여부 확인
         Comment comment = validateComment(commentId);
 
@@ -75,7 +75,7 @@ public class CommentService {
         isCommentAuthor(member, comment);
 
         comment.update(commentRequestDTO);
-        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("update success", new CommentResponseDTO(comment));
+        BasicResponseDto basicResponseDTO = BasicResponseDto.setSuccess("update success", new CommentResponseDto(comment));
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 

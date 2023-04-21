@@ -7,13 +7,13 @@ import myblog.myblog.domain.UserRoleEnum;
 
 @Getter
 @ToString
-public class MemberResponseDTO {
+public class MemberResponseDto {
 
     private Long id;
     private String username;
     private UserRoleEnum role;
 
-    public MemberResponseDTO(Member member) {
+    public MemberResponseDto(Member member) {
         this.id = member.getId();
         this.username = member.getUsername();
         this.role = member.getRole();

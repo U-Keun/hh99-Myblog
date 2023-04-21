@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import myblog.myblog.domain.Post;
-import myblog.myblog.dto.comment.CommentResponseDTO;
+import myblog.myblog.dto.comment.CommentResponseDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +19,7 @@ public class PostResponseDTO {
     private String title;
     private String username;
     private String content;
-    private List<CommentResponseDTO> commentList;
+    private List<CommentResponseDto> commentList;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
@@ -27,7 +27,7 @@ public class PostResponseDTO {
         this.id = post.getId();
         this.title = post.getTitle();
         this.username = post.getMember().getUsername();
-        this.commentList = post.getCommentList().stream().map(CommentResponseDTO::new).collect(Collectors.toList());
+        this.commentList = post.getCommentList().stream().map(CommentResponseDto::new).collect(Collectors.toList());
         this.content = post.getContent();
         this.createdAt = post.getCreatedAt();
         this.modifiedAt = post.getModifiedAt();

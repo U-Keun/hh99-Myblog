@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import myblog.myblog.domain.RefreshToken;
 import myblog.myblog.domain.UserRoleEnum;
-import myblog.myblog.dto.TokenDTO;
+import myblog.myblog.dto.TokenDto;
 import myblog.myblog.repository.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -50,8 +50,8 @@ public class TokenProvider {
     }
 
     // 액세스 토큰 및 리프레시 토큰 생성
-    public TokenDTO createAllToken(String username, UserRoleEnum role) {
-        return new TokenDTO(create(username, role, "Access"), create(username, role, "Refresh"));
+    public TokenDto createAllToken(String username, UserRoleEnum role) {
+        return new TokenDto(create(username, role, "Access"), create(username, role, "Refresh"));
     }
 
     // JWT 생성하는 메서드
