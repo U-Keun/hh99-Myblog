@@ -37,4 +37,9 @@ public class CommentController {
     ) {
         return commentService.updateComment(id, requestDTO, userDetails.getMember());
     }
+
+    @PutMapping("/likes/{id}")
+    public ResponseEntity updateLikes(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return commentService.updateLikes(id, userDetails.getMember());
+    }
 }
