@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import myblog.myblog.domain.RefreshToken;
 import myblog.myblog.domain.UserRoleEnum;
-import myblog.myblog.dto.TokenDTO;
+import myblog.myblog.dto.TokenDto;
 import myblog.myblog.repository.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,6 +36,7 @@ public class TokenProvider {
     private static final String BEARER_PREFIX = "Bearer ";
     public static final String ACCESS_KEY = "ACCESS_KEY";
     public static final String REFRESH_KEY = "REFRESH_KEY";
+    public static final String AUTHORIZATION_KEY = "auth";
     private static final Date ACCESS_TIME = (Date) Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
     private static final Date REFRESH_TIME = (Date) Date.from(Instant.now().plus(2, ChronoUnit.HOURS));
     private final RefreshTokenRepository refreshTokenRepository;
@@ -50,8 +51,8 @@ public class TokenProvider {
     }
 
     // 액세스 토큰 및 리프레시 토큰 생성
-    public TokenDTO createAllToken(String username, UserRoleEnum role) {
-        return new TokenDTO(create(username, role, "Access"), create(username, role, "Refresh"));
+    public TokenDto createAllToken(String username, UserRoleEnum role) {
+        return new TokenDto(create(username, role, "Access"), create(username, role, "Refresh"));
     }
 
     // JWT 생성하는 메서드
@@ -65,7 +66,7 @@ public class TokenProvider {
                         // 암호화에 사용될 알고리즘, 키
                         .signWith(SignatureAlgorithm.HS512, SECURITY_KEY)
                         .setSubject(username)
-                        .claim(ACCESS_KEY, role)
+                        .claim(AUTHORIZATION_KEY, role)
                         .setIssuedAt(date)
                         .setExpiration(exprTime)
                         .compact();

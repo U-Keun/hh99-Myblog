@@ -1,7 +1,7 @@
 package myblog.myblog.controller;
 
 import lombok.RequiredArgsConstructor;
-import myblog.myblog.dto.comment.CommentRequestDTO;
+import myblog.myblog.dto.comment.CommentRequestDto;
 import myblog.myblog.security.UserDetailsImpl;
 import myblog.myblog.service.CommentService;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class CommentController {
     @PostMapping("/{id}")
     public ResponseEntity register(
             @PathVariable Long id,
-            @RequestBody CommentRequestDTO dto,
+            @RequestBody CommentRequestDto dto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return commentService.saveComment(id, dto, userDetails.getMember());
@@ -32,7 +32,7 @@ public class CommentController {
     @PutMapping("/{id}")
     public ResponseEntity update(
             @PathVariable Long id,
-            @RequestBody CommentRequestDTO requestDTO,
+            @RequestBody CommentRequestDto requestDTO,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return commentService.updateComment(id, requestDTO, userDetails.getMember());

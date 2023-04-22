@@ -5,11 +5,11 @@ import lombok.RequiredArgsConstructor;
 import myblog.myblog.domain.Member;
 import myblog.myblog.domain.RefreshToken;
 import myblog.myblog.domain.UserRoleEnum;
-import myblog.myblog.dto.TokenDTO;
-import myblog.myblog.dto.member.LoginRequestDTO;
-import myblog.myblog.dto.BasicResponseDTO;
-import myblog.myblog.dto.member.MemberResponseDTO;
-import myblog.myblog.dto.member.SignupRequestDTO;
+import myblog.myblog.dto.TokenDto;
+import myblog.myblog.dto.member.LoginRequestDto;
+import myblog.myblog.dto.BasicResponseDto;
+import myblog.myblog.dto.member.MemberResponseDto;
+import myblog.myblog.dto.member.SignupRequestDto;
 import myblog.myblog.exception.custom_exeption.MemberException;
 import myblog.myblog.repository.MemberRepository;
 import myblog.myblog.jwt.TokenProvider;
@@ -36,7 +36,7 @@ public class MemberService {
     /**
      * 회원가입
      */
-    public ResponseEntity signup(SignupRequestDTO requestDto) {
+    public ResponseEntity signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
         UserRoleEnum role = requestDto.getRole();
@@ -46,7 +46,7 @@ public class MemberService {
 
         Member member = new Member(username, password, role);
         memberRepository.save(member);
-        BasicResponseDTO<MemberResponseDTO> basicResponseDTO = BasicResponseDTO.setSuccess("signup success", new MemberResponseDTO(member));
+        BasicResponseDto<MemberResponseDto> basicResponseDTO = BasicResponseDto.setSuccess("signup success", new MemberResponseDto(member));
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
@@ -54,7 +54,7 @@ public class MemberService {
      * 로그인
      */
     @Transactional(readOnly = true)
-    public ResponseEntity login(LoginRequestDTO requestDTO, HttpServletResponse response) {
+    public ResponseEntity login(LoginRequestDto requestDTO, HttpServletResponse response) {
         String username = requestDTO.getUsername();
         String password = requestDTO.getPassword();
 
@@ -65,7 +65,7 @@ public class MemberService {
         validatePassword(password, member);
 
         //username (ID) 정보로 Token 생성
-        TokenDTO tokenDto = tokenProvider.createAllToken(requestDTO.getUsername(), member.getRole());
+        TokenDto tokenDto = tokenProvider.createAllToken(requestDTO.getUsername(), member.getRole());
 
         //Refresh 토큰 있는지 확인
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUsername(requestDTO.getUsername());
@@ -83,12 +83,12 @@ public class MemberService {
 
         //응답 헤더에 토큰 추가
         setHeader(response, tokenDto);
-        BasicResponseDTO<MemberResponseDTO> basicResponseDTO = BasicResponseDTO.setSuccess("login success", new MemberResponseDTO(member));
+        BasicResponseDto<MemberResponseDto> basicResponseDTO = BasicResponseDto.setSuccess("login success", new MemberResponseDto(member));
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
     //헤더 설정
-    private void setHeader(HttpServletResponse response, TokenDTO tokenDto) {
+    private void setHeader(HttpServletResponse response, TokenDto tokenDto) {
         response.addHeader(tokenProvider.ACCESS_KEY, tokenDto.getAccessToken());
         response.addHeader(tokenProvider.REFRESH_KEY, tokenDto.getRefreshToken());
     }

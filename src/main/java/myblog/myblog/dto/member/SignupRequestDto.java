@@ -7,7 +7,7 @@ import lombok.Data;
 import myblog.myblog.domain.UserRoleEnum;
 
 @Data
-public class SignupRequestDTO {
+public class SignupRequestDto {
 
     @Size(min = 4, max = 10)
     @NotBlank
