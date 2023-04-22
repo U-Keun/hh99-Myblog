@@ -3,10 +3,12 @@ package myblog.myblog.service;
 import lombok.RequiredArgsConstructor;
 import myblog.myblog.domain.Member;
 import myblog.myblog.domain.Post;
+import myblog.myblog.domain.PostLikes;
 import myblog.myblog.dto.BasicResponseDTO;
 import myblog.myblog.dto.post.PostRequestDTO;
 import myblog.myblog.dto.post.PostResponseDTO;
 import myblog.myblog.exception.custom_exeption.PostException;
+import myblog.myblog.repository.PostLikesRepository;
 import myblog.myblog.repository.PostRepository;
 import myblog.myblog.util.ExceptionMessage;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final PostLikesRepository postLikesRepository;
 
     /**
      * 전체 게시글 조회
@@ -89,6 +92,27 @@ public class PostService {
 
         post.update(postRequestDTO);
         BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("update success", new PostResponseDTO(post));
+        return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
+    }
+
+    /**
+     * 게시글 좋아요
+     */
+    @Transactional
+    public ResponseEntity updateLikes(Long id, Member member) {
+        // 게시글 존재 여부 확인
+        Post post = validatePost(id);
+
+        // 게시글에 현재 유저의 좋아요 유무 확인
+        if (postLikesRepository.existsByPostIdAndMemberId(id, member.getId())){
+            PostLikes postLikes = postLikesRepository.findByPostIdAndMemberId(id, member.getId());
+            postLikesRepository.delete(postLikes);
+            post.updateLikes(false);
+        } else { // 현재 유저의 좋아요 흔적 없음 -> 좋아요
+            postLikesRepository.save(new PostLikes(post, member));
+            post.updateLikes(true);
+        }
+        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("likes update success", null);
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
