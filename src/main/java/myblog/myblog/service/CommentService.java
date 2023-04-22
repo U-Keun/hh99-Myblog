@@ -2,14 +2,13 @@ package myblog.myblog.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import myblog.myblog.domain.Comment;
-import myblog.myblog.domain.Member;
-import myblog.myblog.domain.Post;
+import myblog.myblog.domain.*;
 import myblog.myblog.dto.BasicResponseDTO;
 import myblog.myblog.dto.comment.CommentRequestDTO;
 import myblog.myblog.dto.comment.CommentResponseDTO;
 import myblog.myblog.exception.custom_exeption.CommentException;
 import myblog.myblog.exception.custom_exeption.PostException;
+import myblog.myblog.repository.CommentLikesRepository;
 import myblog.myblog.repository.CommentRepository;
 import myblog.myblog.repository.PostRepository;
 import myblog.myblog.util.ExceptionMessage;
@@ -26,6 +25,7 @@ public class CommentService {
 
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final CommentLikesRepository commentLikesRepository;
 
     /**
      * 댓글 등록
@@ -76,6 +76,26 @@ public class CommentService {
 
         comment.update(commentRequestDTO);
         BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("update success", new CommentResponseDTO(comment));
+        return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
+    }
+
+    /**
+     * 댓글 좋아요
+     */
+    public ResponseEntity updateLikes(Long id, Member member) {
+        // 댓글 존재 여부 확인
+        Comment comment = validateComment(id);
+
+        // 게시글에 현재 유저의 좋아요 유무 확인
+        if (commentLikesRepository.existsByCommentIdAndMemberId(id, member.getId())){
+            CommentLikes commentLikes = commentLikesRepository.findByCommentIdAndMemberId(id, member.getId());
+            commentLikesRepository.delete(commentLikes);
+            comment.updateLikes(false);
+        } else { // 현재 유저의 좋아요 흔적 없음 -> 좋아요
+            commentLikesRepository.save(new CommentLikes(comment, member));
+            comment.updateLikes(true);
+        }
+        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("likes update success", null);
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
