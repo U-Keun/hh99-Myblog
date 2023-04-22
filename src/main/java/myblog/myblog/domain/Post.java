@@ -13,7 +13,7 @@ import java.util.List;
 public class Post extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
+    @Column(name = "postId")
     private Long id;
 
     @Column(nullable = false)
@@ -23,7 +23,7 @@ public class Post extends TimeStamped {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "memberId")
     private Member member;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
