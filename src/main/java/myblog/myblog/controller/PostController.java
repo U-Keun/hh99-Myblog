@@ -36,4 +36,9 @@ public class PostController {
     ) {
         return postService.updatePost(id, reqDTO, userDetails.getMember());
     }
+
+    @PutMapping("/likes/{id}")
+    public ResponseEntity updateLikes(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return postService.updateLikes(id, userDetails.getMember());
+    }
 }
