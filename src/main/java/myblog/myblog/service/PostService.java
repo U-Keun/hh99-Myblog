@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import myblog.myblog.domain.Member;
 import myblog.myblog.domain.Post;
 import myblog.myblog.domain.PostLikes;
-import myblog.myblog.dto.BasicResponseDTO;
+import myblog.myblog.dto.BasicResponseDto;
 import myblog.myblog.dto.post.PostRequestDTO;
 import myblog.myblog.dto.post.PostResponseDTO;
 import myblog.myblog.exception.custom_exeption.PostException;
@@ -36,7 +36,7 @@ public class PostService {
         List<PostResponseDTO> postResponseDTOS = postRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(PostResponseDTO::new)
                 .collect(Collectors.toList());
-        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("list success", postResponseDTOS);
+        BasicResponseDto basicResponseDTO = BasicResponseDto.setSuccess("list success", postResponseDTOS);
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
@@ -49,7 +49,7 @@ public class PostService {
         post.setMember(member);
 
         postRepository.save(post);
-        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("save success", new PostResponseDTO(post));
+        BasicResponseDto basicResponseDTO = BasicResponseDto.setSuccess("save success", new PostResponseDTO(post));
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
@@ -59,7 +59,7 @@ public class PostService {
     public ResponseEntity findPostById(Long id) {
         //게시글 존재 여부 확인
         Post post = validatePost(id);
-        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("findOne success", new PostResponseDTO(post));
+        BasicResponseDto basicResponseDTO = BasicResponseDto.setSuccess("findOne success", new PostResponseDTO(post));
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
@@ -75,7 +75,7 @@ public class PostService {
         isPostAuthor(member, post);
 
         postRepository.deleteById(id);
-        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("delete success", null);
+        BasicResponseDto basicResponseDTO = BasicResponseDto.setSuccess("delete success", null);
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
@@ -91,7 +91,7 @@ public class PostService {
         isPostAuthor(member, post);
 
         post.update(postRequestDTO);
-        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("update success", new PostResponseDTO(post));
+        BasicResponseDto basicResponseDTO = BasicResponseDto.setSuccess("update success", new PostResponseDTO(post));
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 
@@ -112,7 +112,7 @@ public class PostService {
             postLikesRepository.save(new PostLikes(post, member));
             post.updateLikes(true);
         }
-        BasicResponseDTO basicResponseDTO = BasicResponseDTO.setSuccess("likes update success", null);
+        BasicResponseDto basicResponseDTO = BasicResponseDto.setSuccess("likes update success", null);
         return new ResponseEntity(basicResponseDTO, HttpStatus.OK);
     }
 

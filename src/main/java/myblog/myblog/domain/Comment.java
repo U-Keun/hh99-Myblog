@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import myblog.myblog.dto.comment.CommentRequestDTO;
+import myblog.myblog.dto.comment.CommentRequestDto;
 
 @Getter
 @Entity
@@ -29,12 +29,12 @@ public class Comment extends TimeStamped {
     @Column(nullable = false)
     private int likes;
 
-    public Comment(CommentRequestDTO commentRequestDTO) {
+    public Comment(CommentRequestDto commentRequestDTO) {
         this.comment = commentRequestDTO.getComment();
         this.likes = 0;
     }
 
-    public void update(CommentRequestDTO commentRequestDTO) {
+    public void update(CommentRequestDto commentRequestDTO) {
         this.comment = commentRequestDTO.getComment();
     }
 
