@@ -38,22 +38,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (tokenProvider.validateToken(access_token)) {
                 setAuthentication(tokenProvider.getUserInfoFromToken(access_token));
             }
-            // 토큰 만료 && 리프레시 토큰이 존재
-            else if (refresh_token != null) {
-                // 리프레시 토큰 검증 && 리프레시 토큰 DB에서 토큰 존재 유무 확인
-                boolean isRefreshToken = tokenProvider.refreshTokenValidation(refresh_token);
-                // 리프레시 토큰이 유효하고, 리프레시 토큰이 DB에 존재 여부 판단
-                if (isRefreshToken) {
-                    // 리프레시 토큰으로 username, Member DB에서 username을 가진 member 가져오기
-                    String username = tokenProvider.getUserInfoFromToken(refresh_token);
-                    Member member = memberRepository.findByUsername(username).get();
-                    // 새로운 액세스 토큰 발급
-                    String newAccessToken = tokenProvider.create(username, member.getRole(), "Access");
-                    // 헤더에 액세스 토큰 추가
-                    tokenProvider.setHeaderAccessToken(response, newAccessToken);
-                    // Security context에 인증 정보 넣기
-                    setAuthentication(username);
-                }
+            // 액세스 토큰 만료 && 리프레시 토큰이 존재 -> 리프레시 토큰 검증(유효성, DB 존재 여부 확인
+            else if (refresh_token != null && tokenProvider.refreshTokenValidation(refresh_token)) {
+                // 리프레시 토큰으로 username, Member DB에서 username을 가진 member 가져오기
+                String username = tokenProvider.getUserInfoFromToken(refresh_token);
+                Member member = memberRepository.findByUsername(username).get();
+                // 새로운 액세스 토큰 발급
+                String newAccessToken = tokenProvider.create(username, member.getRole(), "Access");
+                // 헤더에 액세스 토큰 추가
+                tokenProvider.setHeaderAccessToken(response, newAccessToken);
+                // Security context에 인증 정보 넣기
+                setAuthentication(username);
             } else if (refresh_token == null) {
                 jwtExceptionHandler(response, "AccessToken has Expired. Please send your RefreshToken together.", HttpStatus.BAD_REQUEST.value());
             }
